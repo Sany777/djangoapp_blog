@@ -1,0 +1,17 @@
+{% extends 'blog/layout.html' %}
+
+{% block header_content %}
+    <a href="{% url 'blog:index' %}"> Home</a>
+{% endblock header_content %}
+
+{% block content %}
+
+    <form action="{% url 'users:register' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button>submit</button>
+        <input hidden name="next" value="{% url 'blog:index' %}" />
+    </form>
+
+{% endblock content %}
+

@@ -1,7 +1,14 @@
 {% extends 'blog/layout.html' %}
 
 
-{% block content %}
- <h1> WORK!!!</h1>
+{% block header_content %}
+    <a href="{% url 'blog:topics' %}"> Topics</a>
+{% endblock header_content %}
 
-{% endblock content %}
+
+{% block title_content %}
+    Main page
+{% endblock title_content %}
+
+
+

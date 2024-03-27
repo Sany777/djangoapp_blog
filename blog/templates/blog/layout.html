@@ -2,12 +2,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}" >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>learning logs</title>
 </head>
 <body>
-    {% block content %}{% endblock content %}
+    
+    <div class="header">
+        {% block header_content %}{% endblock header_content %}
+        <div class="message">
+            {% if user.is_authenticated %}
+                Hello, {{user.username}}
+                <p>
+                    <a href="{% url 'users:logout' %}" >Logout </a>
+                </p>
+            {% else %}
+                <a href="{% url 'users:login' %}" >Log in</a>/
+                <a href="{% url 'users:register' %}" >Register</a> 
+            {% endif %}
+         </div>
+    </div>
+
+    <h1 class="title">
+        {% block title_content %}{% endblock title_content %}
+    </h1>
+
+    <div class="content">
+        {% block content %}{% endblock content %}
+    </div>
+
 </body>
 </html>

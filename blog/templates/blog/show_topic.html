@@ -1,0 +1,32 @@
+{% extends 'blog/layout.html' %}
+
+
+
+{% block header_content %}
+    <a href="{% url 'blog:index' %}"> Home </a><span>></span>
+    <a href="{% url 'blog:topics' %}"> Topics </a><span>></span>
+    <a href="{% url 'blog:new_topic' %}"> New topic </a><span>/</span>
+    <a href="{% url 'blog:new_entry' topic.id %}"> New entry</a>
+{% endblock header_content %}
+
+{% block title_content %}
+    Topic: {{topic}}</h2>
+{% endblock title_content %}
+
+{% block content %}
+
+    {% for entry in entries %}
+    <div class="entry">
+        <div class="entry-date">
+           {{ entry.date_added }}
+           <a href="{% url 'blog:edit_entry' entry.id %}">Edit</a>
+        </div>
+        <div class="entry-text"> 
+           {{ entry.text|linebreaks }}   
+         </div>
+    </div>
+    {% empty %}
+        <p> There are no entries yet </p>
+    {% endfor %}
+
+{% endblock %}

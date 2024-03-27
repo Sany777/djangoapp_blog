@@ -1,0 +1,21 @@
+{% extends 'blog/layout.html' %}
+
+
+{% block header_content %}
+<a href="{% url 'blog:index' %}"> Home <span>></span> </a>
+    <a href="{% url 'blog:topics' %}"> Topics</a>
+{% endblock header_content %}
+
+
+{% block title_content %}
+    Create new topic
+{% endblock title_content %}
+
+
+{% block content %}
+    <form action="{% url 'blog:new_topic' %}" method="post" >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button>submit</button>
+    </form>
+{% endblock content %}

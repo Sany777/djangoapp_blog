@@ -1,0 +1,20 @@
+{% extends 'blog/layout.html' %}
+
+
+{% block header_content %}
+<a href="{% url 'blog:index' %}"> Home </a><span>></span>
+    <a href="{% url 'blog:new_topic' %}">New topic</a>
+{% endblock header_content %}
+
+
+{% block content %}
+    <ul>
+        {% for topic in topics %}
+        <li>
+            <a href="{% url 'blog:topic' topic.id %}">{{topic}}</a>
+        </li>
+        {% empty %}
+            <li> No topic yet </li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

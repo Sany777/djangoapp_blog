@@ -1,11 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    align-content: center;
 }
 
 .title {
-    width: 100%;
     text-align: center;
     font-size: 2rem;
 }
@@ -16,7 +14,6 @@ body {
     align-items: center;
     display: flex;
     flex-direction: column;
-    width: 100%;
 }
 
 button {
@@ -26,7 +23,6 @@ button {
     border: none;
     padding: 0.6rem;
     font-size: 1.3rem;
-
 }
 
 button:hover {
@@ -38,47 +34,20 @@ button:active {
 }
 
 
-.entry {
-    width: 50%;
-    font-size: larger;
-    border: 1px solid grey;
-    border-radius: 0.5rem;
-    overflow: hidden;
-}
-
-.entry-text {
-    padding: 1rem;
-    margin: 2rem;
-}
-
-.entry-date {
-    width: auto;
-    background-color: grey;
-    color: white;
-    height: fit-content;
-    margin: 0;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-}
-
 .header {
-    padding: 2rem;
+    flex-direction: row;
     font-size: 1.3rem;
-    margin: 0;
-    /* background: url("logo.jpeg") rgb(194, 194, 215) repeat-y fixed; */
-    color: white
-        /* background: linear-gradient(to button, red, blue); */
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
 }
 
-.message a {
-    color: rgb(255, 255, 255);
-}
+
 
 a {
     color: black;
     text-decoration: none;
-    margin: 0 2rem;
+    margin: 0 2rem 0.5rem;
 }
 
 a:visited {
@@ -87,30 +56,42 @@ a:visited {
 
 
 
-.message {
-    width: auto;
-    text-align: right;
-    margin: 0;
-}
-
 
 span {
     color: rgb(163, 179, 194);
-    padding: 1rem;
 }
 
 
 img {
-    max-width: 30%;
+    max-width: 100px;
     height: auto;
+    margin-right: auto;
 }
 
-/* Стилі для надання ефекту "підсвічування" при наведенні курсора */
-.header a {
+a {
     display: inline-block;
     transition: transform 0.2s ease-in-out;
 }
 
 a:hover {
     transform: scale(1.1);
+}
+
+.header-content {
+    display: flex;
+    margin-right: auto;
+    align-items: center;
+}
+
+.body-content {
+    margin: 0;
+    width: 100%;
+    min-height: 100vh
+}
+
+.footer-content {
+    background-color: lightgray;
+    min-height: 4rem;
+    display: flex;
+    width: 100%;
 }

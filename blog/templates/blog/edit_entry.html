@@ -6,16 +6,15 @@
     <a href="{% url 'blog:topics' %}"> Topics</a>
 {% endblock header_content %}
 
-{% block title_content %}
-    Edit entry
-{% endblock title_content %}
 
-
-{% block content %}
+{% block main_content %}
+    <h2 class="title">
+        Edit entry
+    </h2>
     <form action="{% url 'blog:edit_entry' entry.id %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input  type="submit" value="submit"/>
     </form>
-{% endblock content %}
+{% endblock main_content %}
 

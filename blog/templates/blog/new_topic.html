@@ -7,15 +7,16 @@
 {% endblock header_content %}
 
 
-{% block title_content %}
-    Create new topic
-{% endblock title_content %}
 
 
-{% block content %}
+
+{% block main_content %}
+    <h2 class="title">
+        Create new topic
+    </h2>
     <form action="{% url 'blog:new_topic' %}" method="post" >
         {% csrf_token %}
         {{ form.as_p }}
         <button>submit</button>
     </form>
-{% endblock content %}
+{% endblock main_content %}

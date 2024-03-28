@@ -1,15 +1,9 @@
-{% extends 'blog/layout.html' %}
-
-
-
-{% block header_content %}
-    <a href="{% url 'blog:index' %}">Home</a>
-{% endblock header_content %}
+{% extends 'registration/layout.html' %}
 
 
 {% block content %}
 
-<p>
+<p class="loged-out">
     You have been loged out
 </p>
 {% endblock content %}

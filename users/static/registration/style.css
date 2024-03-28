@@ -1,3 +1,25 @@
-body {
-    background-color: aqua;
+.register {
+    width: min-content;
+}
+
+.loged-out {
+    width: max-content;
+
+}
+
+input {
+    border: rgb(208, 208, 208) 2px solid;
+    font-size: large;
+    padding: 0.5rem;
+    border-radius: 2px;
+}
+
+li {
+    display: none;
+}
+
+span {
+    font-size: medium;
+    text-align: center;
+    display: block;
 }

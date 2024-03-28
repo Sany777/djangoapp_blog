@@ -10,6 +10,7 @@
 <body>
     
     <div class="header">
+        <a href="{% url 'blog:index' %}"><img src="{% static 'blog/logo.jpeg' %}"></a>
         {% block header_content %}{% endblock header_content %}
         <div class="message">
             {% if user.is_authenticated %}

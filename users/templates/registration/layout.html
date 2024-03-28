@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'registration/style.css' %}" >
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}" >
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'blog:index' %}"><img src="{% static 'blog/logo.jpeg' %}" alt="Клікабельне зображення"></a>
+    </div>
+
+<div class="content">
+    <div class="register">
+        {% block content %}{% endblock content %}
+    </div>
+
+
+</div>
+
+</body>
+</html>

@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{% static 'blog/style.css' %}" >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>learning logs</title>
+    <title>blog</title>
 </head>
 <body>
     <div class="header">
@@ -21,11 +21,13 @@
             <a href="{% url 'users:register' %}">Register</a> 
         {% endif %}
     </div>
+
     <div class="body-content">
-        <div class="aside">
+        <div class="aside-content">
             {% block aside_content %}{% endblock aside_content %}
         </div>
-        <div class="content">
+        <div class="main-content">
+
             {% block main_content %}{% endblock main_content %}
         </div>
     </div>

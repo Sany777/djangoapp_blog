@@ -1,4 +1,5 @@
 {% extends 'blog/layout.html' %}
+{% load static %}
 
 
 {% block header_content %}
@@ -6,6 +7,24 @@
 {% endblock header_content %}
 
 
+{% block main_content %}
+
+<div class="slider">
+  <button class="prev-button slider-button" onclick='slidePrev()'><</button>
+  <button class="next-button slider-button" onclick='slideNext()'>></button>
+  <div class="slider-card">
+    <p class="slide active" > card 1</p>
+    <p class="slide"> card 2</p>
+    <p class="slide"> card 3</p>
+  </div>
+</div>
+
+    <div class="card-container">
+
+    </div>
+
+<script rel="script" src="{% static 'blog/script.js' %}"></script>
+{% endblock main_content %}
 
 
 

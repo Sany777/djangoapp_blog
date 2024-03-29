@@ -1,4 +1,5 @@
 body {
+    font-family: sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -9,12 +10,7 @@ body {
 }
 
 
-.content {
-    font-size: 1.5rem;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-}
+
 
 button {
     background-color: rgb(90, 90, 178);
@@ -84,9 +80,11 @@ a:hover {
 }
 
 .body-content {
-    margin: 0;
+    display: flex;
+    flex-direction: row;
+    margin: 3rem 0;
     width: 100%;
-    min-height: 100vh
+    min-height: 90vh
 }
 
 .footer-content {
@@ -94,4 +92,105 @@ a:hover {
     min-height: 4rem;
     display: flex;
     width: 100%;
+}
+
+.aside-content {
+    flex: 1 1 20%;
+    display: flex;
+    flex-grow: 1rem;
+    align-items: baseline;
+    justify-content: flex-start;
+}
+
+.main-content {
+    font-size: 1.5rem;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 70%;
+}
+
+.card-container {
+    border: solid 1px black;
+    width: 70%;
+    height: 10%;
+    padding: 2rem;
+    border-radius: 0.5rem;
+}
+
+
+
+.empty-message {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.slider {
+    margin-top: 30px;
+    position: relative;
+    margin-bottom: 75px;
+    width: 50%;
+}
+
+.slide {
+    display: none;
+    text-align: center;
+    padding: 24px;
+}
+
+.active {
+    display: block;
+}
+
+
+
+/* .slide-caption {
+    margin-bottom: 1.5rem;
+} */
+
+/* .slide-cta-button {
+    color: #000;
+    background-color: #faff69;
+    font-weight: bold;
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #000;
+    border-bottom-width: 3px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.slide-cta-button:hover {
+    background-color: #d7ff67;
+} */
+
+.slider-button {
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 0.5rem;
+    width: 3rem;
+    height: 3rem;
+    border-bottom-width: 3px;
+    border-radius: 100%;
+    position: absolute;
+    cursor: pointer;
+    color: #777;
+    background-color: #ddd;
+    transition-duration: 0.2s;
+}
+
+.slider-button:hover {
+    color: #ddd;
+    background-color: #777;
+}
+
+
+.prev-button {
+    left: -1.5rem;
+    top: 40%;
+}
+
+.next-button {
+    right: -1.5rem;
+    top: 40%;
 }

@@ -9,13 +9,15 @@
 
 {% block main_content %}
 
-<div class="slider">
+<div class="slider" hidden>
   <button class="prev-button slider-button" onclick='slidePrev()'><</button>
   <button class="next-button slider-button" onclick='slideNext()'>></button>
   <div class="slider-card">
-    <p class="slide active" > card 1</p>
-    <p class="slide"> card 2</p>
-    <p class="slide"> card 3</p>
+    {% for slidecard in slidecards %}
+    <a class="slide">
+      {{ slidecard.text }}
+    </>
+    {% endfor %}
   </div>
 </div>
 

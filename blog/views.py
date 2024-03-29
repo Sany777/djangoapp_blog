@@ -5,15 +5,33 @@ from django.http import Http404
 from .models import *
 from .forms import *
 
+
+
 def index(request):
-    return render(request, 'blog/index.html')
+
+    pub_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
+    slidecards = Entry.objects.all()
+    # if pub_topics:
+    #     slidecards = pub_topics.entries_set.all()
+
+    if request.user.is_authenticated:
+        friends = UserGroupPreference.objects.filter(user=request.user).values('user')
+        # if friends:
+            # friend_topics = friends.topic_set.order_by('-date_added')
+            # friend_entry = friend_topics.entries_set.order_by('-date_added')
+
+    return render(request, 'blog/index.html', {
+        'slidecards':slidecards,
+        # 'friend_topics':friend_topics,
+        # 'friend_entry':friend_entry
+    })
 
 
-@login_required
+# @login_required
 def show_topics(request):
-    bloger = Bloger.objects.get(user=request.user)
+
     all_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
-    own_topics = Topic.objects.filter(owner=bloger) 
+    own_topics = Topic.objects.filter(owner=request.user) 
 
     return render(request, 'blog/topic.html', {
         'own_topics':own_topics,
@@ -21,7 +39,7 @@ def show_topics(request):
     })
 
 
-@login_required
+# @login_required
 def new_topic(request):
 
     if request.method != 'POST':
@@ -31,6 +49,7 @@ def new_topic(request):
         if form.is_valid():
             topic = form.save(commit=False)
             topic.owner = request.user
+            topic.permision = Topic.Permissions.PRIVATE;
             topic.save()
             return redirect('blog:index')
         
@@ -39,7 +58,7 @@ def new_topic(request):
     })
 
 
-@login_required
+# @login_required
 def edit_entry(request, entry_id):
 
     own_topics = Topic.objects.filter(owner=request.user)
@@ -62,19 +81,17 @@ def edit_entry(request, entry_id):
     })
 
 
-@login_required
+# @login_required
 def show_topic(request, topic_id):
 
     bloger = Bloger.objects.get(user=request.user)
-    groups = UserGroupPreference.objects.get(user=bloger).order_by('user')
-
-    topic = Topic.objects.filter(owner=bloger, permision=Topic.Permissions.FOR_ALL).get(pk=topic_id)
+    friends = UserGroupPreference.objects.filter(user=request.user).values('user')
+    topic = Topic.objects.filter(user=request.user, permision=Topic.Permissions.FOR_ALL).get(pk=topic_id)
     entries = topic.entry_set.order_by('-date_added')
 
     return render(request, 'blog/show_topic.html', {
         'topic':topic,
         'entries':entries,
-        'groups':groups
     })
 
 

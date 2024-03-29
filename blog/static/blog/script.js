@@ -1,3 +1,12 @@
+(()=>{
+    let firstEl = document.querySelector(".slide")
+    if( firstEl ){
+        firstEl.classList.add("active");
+        document.querySelector(".slider").hidden = false;
+    } else {
+    }
+})();
+
 
 function slidePrev()
 {

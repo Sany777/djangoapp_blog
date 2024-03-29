@@ -44,7 +44,7 @@ class Group(models.Model):
 
 
 class UserGroupPreference(models.Model):
-    user = models.ForeignKey(Bloger, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     
     def __str__(self):
@@ -60,7 +60,7 @@ class Topic(models.Model):
         FOR_ALL = 2
 
     text = models.CharField(max_length=200)
-    owner = models.ForeignKey(Bloger, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     permision = models.IntegerField(choices=Permissions, default=Permissions.PRIVATE)
 
     def __str__(self):

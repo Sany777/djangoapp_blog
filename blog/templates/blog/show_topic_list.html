@@ -1,0 +1,41 @@
+{% extends 'blog/layout.html' %}
+
+
+{% block header_content %}
+<a href="{% url 'blog:index' %}"> Home </a><span>></span>
+    {% if user.is_authenticated %}
+        <a href="{% url 'blog:new_topic' %}">New topic</a>
+    {% endif %}
+{% endblock header_content %}
+
+
+{% block main_content %}
+    {% if user.is_authenticated %}
+        {% if own_topics %}
+            <h3> My Topic </h3>
+            <ul>
+                {% for topic in own_topics %}
+                    <li>
+                        <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h3> There are no own topics yet </h3>
+        {% endif %}
+    {% endif %}
+
+    {% if all_topics %}
+        <h3>Public topics</h3>
+        <ul>
+            {% for topic in all_topics %}
+            <li>
+                <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h3>There are no public topics</h3>
+    {% endif %}
+    
+{% endblock main_content %}

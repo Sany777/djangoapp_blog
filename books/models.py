@@ -23,7 +23,7 @@ class Book(models.Model):
 
 class Review(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    owner = models.ForeignKey(Bloger, on_delete=models.CASCADE)
+    # owner = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     pub_date = models.DateField(auto_now_add=True)
     scores = models.BigIntegerField(null=True)

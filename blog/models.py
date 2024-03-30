@@ -35,21 +35,13 @@ class Bloger(models.Model):
 
 class Group(models.Model):
     """group by preferences"""
-    description = models.CharField(max_length=32)
+    name = models.CharField(max_length=32)
     image = models.ImageField(blank=True)  
     date_created = models.DateField(auto_now_add=True)
-
-    def __str__(self):
-        return self.description
-
-
-class UserGroupPreference(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    user = models.ManyToManyField(User, related_name='group_memberships')
     
     def __str__(self):
-        return f"{self.user} in {self.group}"
-    
+        return self.name
 
 
 class Topic(models.Model):
@@ -60,7 +52,7 @@ class Topic(models.Model):
         FOR_ALL = 2
 
     text = models.CharField(max_length=200)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='topics')
     permision = models.IntegerField(choices=Permissions, default=Permissions.PRIVATE)
 
     def __str__(self):
@@ -70,14 +62,11 @@ class Topic(models.Model):
 class Entry(models.Model):
 
     text = models.TextField()
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_query_name='entry', related_name='entries')
     date_added = models.DateTimeField(auto_now_add=True)
 
     scores = models.BigIntegerField(null=True)
     score_num = models.IntegerField(null=True)
-
-    class Meta:
-        verbose_name_plural = 'entries'
 
     def __str__(self):
         if len(self.text) > 50:

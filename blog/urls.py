@@ -7,9 +7,11 @@ app_name = "blog"
 
 
 urlpatterns = [
+    path('topics/<int:topic_id>/remove', views.remove_topic, name='remove_topic'),
+    path('topics/<int:topic_id>/', views.show_topic, name='show_topic'),
+    path('topics/new', views.new_topic, name='new_topic'),
+    path('topics/', views.show_topic_list, name='show_topic_list'),
+    path('entry/<int:entry_id>/edit', views.edit_entry, name='edit_entry'),
+    path('entry/<int:topic_id>/new', views.new_entry, name='new_entry'),
     path('', views.index, name='index'),
-    path('topics/<int:topic_id>/', views.show_topic, name='topic'),
-    path('topics/', views.show_topics, name='topics'),
-    path('new_topic/', views.new_topic, name='new_topic'),
-    path('editentry/<int:entry_id>', views.edit_entry, name='edit_entry'),
 ]

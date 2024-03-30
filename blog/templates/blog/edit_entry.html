@@ -3,18 +3,18 @@
 
 {% block header_content %}
 <a href="{% url 'blog:index' %}"> Home <span>></span></a>
-    <a href="{% url 'blog:topics' %}"> Topics</a>
+    <a href="{% url 'blog:show_topic_list' %}"> Topics</a>
 {% endblock header_content %}
 
 
 {% block main_content %}
     <h2 class="title">
-        Edit entry
+        {{ message }}
     </h2>
     <form action="{% url 'blog:edit_entry' entry.id %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input  type="submit" value="submit"/>
+        <button>Submit</button>
     </form>
 {% endblock main_content %}
 

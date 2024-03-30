@@ -3,7 +3,6 @@
     if( firstEl ){
         firstEl.classList.add("active");
         document.querySelector(".slider").hidden = false;
-    } else {
     }
 })();
 

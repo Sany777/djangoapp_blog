@@ -8,8 +8,9 @@ class TopicForm(forms.ModelForm):
 
     class Meta:
         model = Topic
-        fields = ['text',]
-        labels = {'text':'topic', }
+        permision = forms.ChoiceField(choices=Topic.Permissions)
+        fields = ['text', 'permision']
+        labels = {'text':'Topic', }
 
 
 class EntryForm(forms.ModelForm):

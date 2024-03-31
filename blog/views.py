@@ -24,20 +24,19 @@ def index(request):
         # for topic in pub_topics:
         #     all_pub[f'{topic.text}'] = topic.entries.all()
 
-    # if request.user and request.user.is_authenticated:
-    #     user_topic = request.user.topics.all()
+    if request.user and request.user.is_authenticated:
+        user_topic = request.user.topics.all()
 
-        # groups = Group.objects.filter(user=request.user)
-        # if groups:
-        #     friends = groups.users.exclude(user=request.user)
-        #     friends_topics = friends.topic_set.order_by('-date_added')
-        #     friends_entry = friends_topics.entry_set.order_by('-date_added')
+        groups = Group.objects.filter(user=request.user)
+        if groups:
+            friends = groups.group_memberships.exclude(user=request.user)
+            friends_topics = friends.topic_set.order_by('-date_added')
+            friends_entry = friends_topics.entry_set.order_by('-date_added')
 
-    uniq_entry = list(set((pub_entry)))
 
     
     return render(request, 'blog/index.html', {
-        'slidecards':uniq_entry[:10],
+        'slidecards':friends_entry,
         'user_topic':user_topic,
         'friend_topics':friends_topics,
         'pub_topics':pub_topics
@@ -134,4 +133,8 @@ def show_topic(request, topic_id):
     })
 
 
-
+def about(request):
+    about = ServiceContent.objects.get(name='about')
+    return render(request, 'blog/about.html', {
+        'about':about
+    })

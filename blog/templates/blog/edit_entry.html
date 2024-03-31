@@ -2,10 +2,9 @@
 
 
 {% block header_content %}
-<a href="{% url 'blog:index' %}"> Home <span>></span></a>
+    <a href="{% url 'blog:index' %}"> Home </a><span>></span>
     <a href="{% url 'blog:show_topic_list' %}"> Topics</a>
 {% endblock header_content %}
-
 
 {% block main_content %}
     <h2 class="title">

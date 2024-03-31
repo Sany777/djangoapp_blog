@@ -38,7 +38,7 @@ class Group(models.Model):
     name = models.CharField(max_length=32)
     image = models.ImageField(blank=True)  
     date_created = models.DateField(auto_now_add=True)
-    user = models.ManyToManyField(User, related_name='group_memberships')
+    user = models.ManyToManyField(User)
     
     def __str__(self):
         return self.name
@@ -75,3 +75,10 @@ class Entry(models.Model):
         return self.text
         
 
+class ServiceContent(models.Model):
+    name = models.CharField(max_length=200)
+    text = models.TextField()
+    date_added = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.name

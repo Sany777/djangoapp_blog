@@ -1,5 +1,5 @@
 {% extends 'blog/layout.html' %}
-
+{% load static %}
 
 {% block header_content %}
     <a href="{% url 'blog:index' %}"> Home </a><span>></span>
@@ -15,5 +15,6 @@
         {{ form.as_p }}
         <button>Submit</button>
     </form>
+    <script rel="script" src="{% static 'blog/edit_script.js' %}"></script>
 {% endblock main_content %}
 

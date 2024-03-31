@@ -13,32 +13,28 @@ from .forms import *
 
 def index(request):
 
-    pub_topics = Topic.objects.get(permision=Topic.Permissions.FOR_ALL)
+    pub_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
     user_topic = None
     pub_entry = None
-    friends_entry = None
+    friend_entries = None
     friends_topics = None
-    
+
     if pub_topics:
-        pub_entry = pub_topics.entries.all()[:10]
-        # for topic in pub_topics:
-        #     all_pub[f'{topic.text}'] = topic.entries.all()
+        pub_entry = pub_topics[0].entries.all()[:10]
 
-    if request.user and request.user.is_authenticated:
+    if request.user.is_authenticated:
+        user_groups = request.user.group_set.all()
         user_topic = request.user.topics.all()
-
-        groups = Group.objects.filter(user=request.user)
-        if groups:
-            friends = groups.group_memberships.exclude(user=request.user)
-            friends_topics = friends.topic_set.order_by('-date_added')
-            friends_entry = friends_topics.entry_set.order_by('-date_added')
-
-
+        if user_groups:
+            friends = [user for group in user_groups for user in group.user.all()]
+            if friends:
+                friends_topics = [topic for friend in friends for topic in friend.topics.all()]
+                friend_entries = [entry for topic in friends_topics for entry in topic.entries.all() ]
     
     return render(request, 'blog/index.html', {
-        'slidecards':friends_entry,
+        'slidecards':friend_entries,
         'user_topic':user_topic,
-        'friend_topics':friends_topics,
+        'friends_topics':friends_topics,
         'pub_topics':pub_topics
     })
 

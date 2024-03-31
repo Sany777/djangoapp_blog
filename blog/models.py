@@ -33,7 +33,7 @@ class Bloger(models.Model):
         return self.user.username
 
 
-class Group(models.Model):
+class Group(models.Model): 
     """group by preferences"""
     name = models.CharField(max_length=32)
     image = models.ImageField(blank=True)  

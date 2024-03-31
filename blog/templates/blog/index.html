@@ -6,6 +6,14 @@
     <a href="{% url 'blog:show_topic_list' %}"> Topics</a>
 {% endblock header_content %}
 
+{% block aside_content %}
+    {% for topic in friends_topics %}
+    <li>
+        <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
+    </li>
+    {% endfor %}
+{% endblock aside_content %}
+
 
 {% block main_content %}
 

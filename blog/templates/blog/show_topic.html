@@ -17,10 +17,11 @@
 
     {% for entry in entries %}
     <div class="entry">
-        <div class="entry-date">
+        <div class="entry-header">
            {{ entry.date_added }}
            <a href="{% url 'blog:edit_entry' entry.id %}">Edit</a>
         </div>
+
         <div class="entry-text"> 
            {{ entry.text|linebreaks }}   
          </div>

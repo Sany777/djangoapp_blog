@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="{% static 'blog/style.css' %}" >
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>blog</title>
@@ -10,7 +11,7 @@
 <body>
     <div class="header">
         <div class="header-content">
-            <a href="{% url 'blog:index' %}"><img src="{% static 'blog/logo.jpeg' %}"></a>
+            <a href="{% url 'blog:index' %}"><img src="{% static 'blog/logo.png' %}"></a>
             {% block header_content %}{% endblock header_content %}
         </div>
         {% if user.is_authenticated %}
@@ -27,12 +28,12 @@
             {% block aside_content %}{% endblock aside_content %}
         </div>
         <div class="main-content">
-
             {% block main_content %}{% endblock main_content %}
         </div>
     </div>
     <div class="footer-content">
         
     </div>
+    <script rel="script" src="{% static 'blog/script.js' %}"></script>
 </body>
 </html>

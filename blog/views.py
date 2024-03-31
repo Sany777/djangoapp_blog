@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 
 from django.contrib.auth.models import User
 
@@ -13,22 +13,33 @@ from .forms import *
 
 def index(request):
 
-    pub_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
-
+    pub_topics = Topic.objects.get(permision=Topic.Permissions.FOR_ALL)
+    user_topic = None
+    pub_entry = None
+    friends_entry = None
+    friends_topics = None
+    
     if pub_topics:
-        pub_entry = pub_topics.entry_set.all()
+        pub_entry = pub_topics.entries.all()[:10]
+        # for topic in pub_topics:
+        #     all_pub[f'{topic.text}'] = topic.entries.all()
 
-    if request.user.is_authenticated:
-        user_topic = request.user.topics.all()
+    # if request.user and request.user.is_authenticated:
+    #     user_topic = request.user.topics.all()
 
-        groups = Group.objects.filter(user=request.user)
+        # groups = Group.objects.filter(user=request.user)
         # if groups:
+        #     friends = groups.users.exclude(user=request.user)
         #     friends_topics = friends.topic_set.order_by('-date_added')
         #     friends_entry = friends_topics.entry_set.order_by('-date_added')
 
+    uniq_entry = list(set((pub_entry)))
+
+    
     return render(request, 'blog/index.html', {
-        # 'slidecards':friends_entry,
-        # 'friend_topics':friends_topics,
+        'slidecards':uniq_entry[:10],
+        'user_topic':user_topic,
+        'friend_topics':friends_topics,
         'pub_topics':pub_topics
     })
 

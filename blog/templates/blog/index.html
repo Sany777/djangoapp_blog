@@ -11,21 +11,21 @@
 
 <div class="slider" hidden>
   <button class="prev-button slider-button" onclick='slidePrev()'><</button>
-  <button class="next-button slider-button" onclick='slideNext()'>></button>
   <div class="slider-card">
     {% for slidecard in slidecards %}
     <a class="slide">
       {{ slidecard.text }}
-    </>
+    </a>
     {% endfor %}
   </div>
+  <button class="next-button slider-button" onclick='slideNext()'>></button>
 </div>
 
     <div class="card-container">
 
     </div>
 
-<script rel="script" src="{% static 'blog/script.js' %}"></script>
+
 {% endblock main_content %}
 
 

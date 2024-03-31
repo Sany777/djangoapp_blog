@@ -6,6 +6,11 @@
     }
 })();
 
+const textarea = document.getElementById('auto-resize');
+
+textarea.addEventListener('scroll', () => {
+    textarea.style.height = textarea.scrollHeight + 'px'; 
+});
 
 function slidePrev()
 {
@@ -22,8 +27,8 @@ function slideNext()
     let activeSlide = document.querySelector('.slide.active');
     let toSlide = activeSlide.nextElementSibling;
     toSlide = activeSlide.nextElementSibling;
-        if (!toSlide)
-            toSlide = activeSlide.parentElement.firstElementChild;
+    if (!toSlide)
+        toSlide = activeSlide.parentElement.firstElementChild;
     activeSlide.classList.remove('active');
     toSlide.classList.add('active');
 }

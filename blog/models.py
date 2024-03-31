@@ -57,12 +57,12 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.text
- 
+
 
 class Entry(models.Model):
 
     text = models.TextField()
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_query_name='entry', related_name='entries')
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE,related_name='entries')
     date_added = models.DateTimeField(auto_now_add=True)
 
     scores = models.BigIntegerField(null=True)
@@ -71,7 +71,7 @@ class Entry(models.Model):
     def __str__(self):
         if len(self.text) > 50:
             return f"{self.text[:50]}..." 
-        
+
         return self.text
         
 

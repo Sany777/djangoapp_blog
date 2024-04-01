@@ -20,9 +20,14 @@
     <div class="entry">
         <div class="entry-header">
            {{ entry.date_added }}
+           <a href="{% url 'blog:edit_entry' entry.id %}">
             {% if topic.user == user %}
-                <a href="{% url 'blog:edit_entry' entry.id %}">Edit</a>
+                Edit
+            {% else %}
+                Show
             {% endif%}
+            </a>
+
         </div>
 
         <div class="entry-text"> 

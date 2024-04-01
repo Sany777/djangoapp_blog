@@ -4,18 +4,18 @@
 {% block header_content %}
     <a href="{% url 'blog:index' %}"> Home </a><span>></span>
     <a href="{% url 'blog:show_topic_list' %}"> Topics</a>
+    <a class="danger" href="{% url 'blog:remove_entry' entry.id %}">Remove entry</a>
 {% endblock header_content %}
 
 {% block main_content %}
-    <h2 class="title">
-        {{ message }}
-    </h2>
+    <h3 class="title">
+        {{ topic }}
+    </h3>
     <form action="{% url 'blog:edit_entry' entry.id %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button>Submit</button>
     </form>
-    <a class="danger" href="{% url 'blog:remove_entry' entry.id %}">Remove entry</a>
     <script rel="script" src="{% static 'blog/edit_script.js' %}"></script>
 {% endblock main_content %}
 

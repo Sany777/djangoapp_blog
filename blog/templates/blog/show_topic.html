@@ -3,22 +3,25 @@
 
 {% block header_content %}
     <a href="{% url 'blog:index' %}"> Home </a><span>></span>
-    <a href="{% url 'blog:show_topic_list' %}"> Topics </a><span>></span>
-    <a href="{% url 'blog:new_topic' %}"> New topic </a><span>/</span>
-    <a href="{% url 'blog:new_entry' topic.id %}"> New entry</a>
+    <a href="{% url 'blog:show_topic_list' %}"> Topics </a>
+    {% if topic.user == user %}
+        <span>></span><a href="{% url 'blog:new_topic' %}"> New topic </a>
+        <span>/</span><a href="{% url 'blog:new_entry' topic.id %}"> New entry</a>
+        <a class="danger" href="{% url 'blog:remove_topic' topic.id %}"> Delete Topic</a>
+    {% endif %}
 {% endblock header_content %}
 
-{% block title_content %}
-    Topic: {{ topic }}
-{% endblock title_content %}
 
 {% block main_content %}
+
+
+    <h3> {{ topic }} </h3>
 
     {% for entry in entries %}
     <div class="entry">
         <div class="entry-header">
            {{ entry.date_added }}
-            {% if own_topic %}
+            {% if topic.user == user %}
                 <a href="{% url 'blog:edit_entry' entry.id %}">Edit</a>
             {% endif%}
         </div>
@@ -31,8 +34,6 @@
         <p> There are no entries yet </p>
     {% endfor %}
 
-    {% if topic.user == user %}
-        <a class="danger" href="{% url 'blog:remove_topic' topic.id %}"> Delete Topic</a>
-    {% endif %}
+
     
 {% endblock main_content %}

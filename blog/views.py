@@ -59,6 +59,7 @@ def index(request):
 
 
 def show_topic_list(request):
+    
     (pub_topics, user_topics, friends_topics ) = get_topics_data(request)
 
     return render(request, 'blog/show_topic_list.html', {
@@ -73,6 +74,8 @@ def show_topic_list(request):
 
 @login_required
 def new_topic(request):
+    
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
 
     if request.method != 'POST':
         form = TopicForm()
@@ -85,18 +88,24 @@ def new_topic(request):
             return redirect('blog:show_topic', topic.id)
         
     return render(request, 'blog/new_topic.html',{
-        'form':form
+        'form':form,
+        'user_aside_topics':user_topics[:7],
+        'friends_aside_topics':friends_topics[:7],
+        'pub_aside_topics': pub_topics[:7]
     })
 
 
 
 @login_required
 def edit_entry(request, entry_id):
+    
+    entry = get_object_or_404(Entry, pk=entry_id)
+    
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
 
-    entry = get_object_or_404(Entry, pk=entry_id, user=request.user)
     topic = entry.topic
     if topic.user != request.user:
-        return redirect('blog:index', topic.id)
+        return Http404("It is forbidden")
     
     if request.method == 'POST':
         form = EntryForm(instance=entry, data=request.POST)
@@ -110,6 +119,9 @@ def edit_entry(request, entry_id):
         'form':form,
         'topic':topic,
         'entry':entry,
+        'user_aside_topics':user_topics[:7],
+        'friends_aside_topics':friends_topics[:7],
+        'pub_aside_topics': pub_topics[:7]
     })
 
 
@@ -117,6 +129,7 @@ def edit_entry(request, entry_id):
 def new_entry(request, topic_id):
 
     topic = get_object_or_404(Topic, pk=topic_id, user=request.user)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
 
     if request.method == 'POST':
         form = EntryForm(data=request.POST)
@@ -131,18 +144,24 @@ def new_entry(request, topic_id):
     return render(request, 'blog/new_entry.html', {
         'form':form,
         'topic':topic,
-        'message':'New entry'
+        'message':'New entry',
+        'user_aside_topics':user_topics[:7],
+        'friends_aside_topics':friends_topics[:7],
+        'pub_aside_topics': pub_topics[:7]
     })
 
 
 @login_required
 def remove_topic(request, topic_id):
+    
     topic = get_object_or_404(Topic, pk=topic_id, user=request.user)
+    
     topic_name = topic.text
     topic.delete()
     return render(request, 'blog/message.html', {
-        'message_str': f"{topic_name} removed"
+        'message_str': f'Topic "{topic_name}" removed'
     })
+    
 
 
 
@@ -154,21 +173,25 @@ def remove_entry(request, entry_id):
     if entry.topic.user == request.user:
         entry.delete()     
         return render(request, 'blog/message.html', {
-            'message_str': f"{entry_name} removed"
+            'message_str': f'Entry "{entry_name}" removed'
         })
         
-    return Http404("Forbied")
+    return Http404("It is forbidden")
 
 
 def show_topic(request, topic_id):
 
     topic = get_object_or_404(Topic, pk=topic_id)
+    
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
     entries = topic.entries.order_by('-date_added')
 
     return render(request, 'blog/show_topic.html', {
         'topic':topic,
         'entries':entries,
-        'own_topic':topic.user == request.user
+        'user_aside_topics':user_topics[:7],
+        'friends_aside_topics':friends_topics[:7],
+        'pub_aside_topics': pub_topics[:7]
     })
 
 

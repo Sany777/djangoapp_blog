@@ -263,3 +263,7 @@ ul {
     margin-top: 4rem;
 
 }
+
+.danger {
+    color: darkred;
+}

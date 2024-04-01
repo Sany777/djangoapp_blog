@@ -4,53 +4,70 @@ from django.http import Http404, HttpResponseForbidden
 
 from django.contrib.auth.models import User
 
-
-
 from .models import *
 from .forms import *
 
 
-
-def index(request):
-
+def get_topics_data(request):
+    
+    user_topics = []
+    friends_topics = []
+    
     pub_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
-    user_topic = None
-    pub_entry = None
-    friend_entries = None
-    friends_topics = None
-
-    if pub_topics:
-        pub_entry = pub_topics[0].entries.all()[:10]
-
+            
     if request.user.is_authenticated:
+        user_topics = request.user.topics.order_by('-pk')
         user_groups = request.user.group_set.all()
-        user_topic = request.user.topics.all()
         if user_groups:
             friends = [user for group in user_groups for user in group.user.all()]
             if friends:
-                friends_topics = [topic for friend in friends for topic in friend.topics.all()]
-                friend_entries = [entry for topic in friends_topics for entry in topic.entries.all() ]
+                friends_topics = [topic for friend in friends for topic in friend.topics.order_by('-pk')]
+
+    return (pub_topics, user_topics, friends_topics)
+
+
+def get_entry_from_topics(topics):
+    return [entry for topic in topics for entry in topic.entries.order_by('-pk')]
+
+       
+def index(request):
     
+    slidecards_entry = []
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    pub_entries = get_entry_from_topics(pub_topics)
+    friends_entries = get_entry_from_topics(friends_topics)
+    
+    if len(pub_entries) == 0:
+        pub_topics = []
+    else:
+        pub_entries = pub_entries[:10]
+        
+    if len(friends_entries) > 0:
+        friends_entries = friends_entries[:10]
+ 
+
+    if len(friends_entries) >0 or len(pub_entries) >0:
+            slidecards_entry = (friends_entries + pub_entries)[:10]
+            
     return render(request, 'blog/index.html', {
-        'slidecards':friend_entries,
-        'user_topic':user_topic,
-        'friends_topics':friends_topics,
-        'pub_topics':pub_topics
+        'slidecards':slidecards_entry,
+        'user_aside_topics':user_topics[:7],
+        'friends_aside_topics':friends_topics[:7],
+        'pub_aside_topics': pub_topics[:7]
     })
 
 
 # @login_required
 def show_topic_list(request):
-
-    all_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)\
-
-    own_topics = None
-    if request.user and request.user.is_authenticated:
-        own_topics = Topic.objects.filter(user=request.user) 
+    (pub_topics, user_topics, friends_topics ) = get_topics_data(request)
 
     return render(request, 'blog/show_topic_list.html', {
-        'own_topics':own_topics,
-        'all_topics':all_topics
+        'user_topics':user_topics,
+        'friends_topics':friends_topics,
+        'pub_topics':pub_topics,
+        'user_aside_topics':user_topics[:7],
+        'friends_aside_topics':friends_topics[:7],
+        'pub_aside_topics': pub_topics[:7]
     })
 
 

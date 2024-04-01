@@ -1,4 +1,4 @@
-const delayInMilliseconds = 2000;
+const delayInMilliseconds = 3000;
 
 const redirectUrl = '/blog/';
 

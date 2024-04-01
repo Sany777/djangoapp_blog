@@ -1,18 +1,22 @@
 {% extends 'registration/layout.html' %}
+{% load static %}
 
+{% block header_content %}
+    <a href="{% url 'users:register' %}">Register</a> 
+{% endblock header_content %}
 
 {% block content %}
 
     {% if form.errors %}
-    <p>
+    <p class="registration-content atention">
         Please try again
     </p>
     {% endif %}
 
-    <form action="{% url 'users:login' %}" method="post">
+    <form action="{% url 'users:login' %}" method="post" class="registration-content">
         {% csrf_token %}
         {{ form.as_p }}
-        <button>submit</button>
+        <button>Submit</button>
         <input hidden name="next" value="{% url 'blog:index' %}" />
     </form>
 {% endblock content %}

@@ -1,25 +1,40 @@
-.register {
-    width: min-content;
+.registration-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100hv;
 }
 
-.loged-out {
-    width: max-content;
-
+.registration-content {
+    width: 40%;
+    display: block;
+    font-size: 1.5rem;
+    text-align: center;
 }
 
-input {
-    border: rgb(208, 208, 208) 2px solid;
-    font-size: large;
+
+.atention {
+    color: crimson;
+    text-align: center;
+}
+
+.registration-content input {
     padding: 0.5rem;
-    border-radius: 2px;
+    width: 20rem;
+    border: gray;
 }
 
-li {
-    display: none;
+.registration-content input:enabled {
+    outline-color: rgb(79, 106, 227);
 }
 
-span {
-    font-size: medium;
+label {
     text-align: center;
     display: block;
+}
+
+span,
+ul {
+    display: none;
 }

@@ -9,15 +9,19 @@
     <title>Registration</title>
 </head>
 <body>
-    <div class="header-content">
-        <a href="{% url 'blog:index' %}"><img src="{% static 'blog/logo.png' %}" alt="Клікабельне зображення"></a>
+    <div class="header-wrap">
+        <div class="header-start">
+            <a href="{% url 'blog:index' %}"><img src="{% static 'blog/logo.png' %}"></a>
+        </div>
+
+        <div class="header-end">
+            {% block header_content %}{% endblock header_content %}
+        </div>
     </div>
 
-<div class="main-content">
-    <div class="register">
+    <div class="registration-container">
         {% block content %}{% endblock content %}
     </div>
-</div>
 
 </body>
 </html>

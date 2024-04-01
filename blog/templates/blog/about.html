@@ -1,5 +1,5 @@
 {% extends 'blog/layout.html' %}
-{% load static %}
+
 
 {% block header_content %}
     <a href="{% url 'blog:show_topic_list' %}"> Topics</a>
@@ -7,9 +7,13 @@
 
 {% block main_content %}
 
-    <p class="card-container">
-        {{ about.text }}
+    <p class="message-container">
+        <div>
+            {{ about.text }}
+        </div>
     </p>
 
 
 {% endblock main_content %}
+
+

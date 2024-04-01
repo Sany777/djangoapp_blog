@@ -3,12 +3,17 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="{% static 'blog/style.css' %}" >
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>blog</title>
 </head>
 <body>
+    {% comment %} <div id="myModal" class="modal" hidden>
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>{{ atention_message }}</p>
+        </div>
+    </div> {% endcomment %}
     <div class="header-wrap">
         <div class="header-start">
             <a href="{% url 'blog:index' %}"><img src="{% static 'blog/logo.png' %}"></a>
@@ -17,7 +22,7 @@
         <div class="header-end">
             {% if user.is_authenticated %}
                 Hello, {{user.username}}
-                <a href="{% url 'users:logout' %}" > Logout </a>
+                <a href="{% url 'users:logout' %}"> Logout </a>
             {% else %}
                 <a href="{% url 'users:login' %}" >Log in</a>
                 <a href="{% url 'users:register' %}">Register</a> 

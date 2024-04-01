@@ -8,15 +8,9 @@
     <title>blog</title>
 </head>
 <body>
-    {% comment %} <div id="myModal" class="modal" hidden>
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>{{ atention_message }}</p>
-        </div>
-    </div> {% endcomment %}
     <div class="header-wrap">
         <div class="header-start">
-            <a href="{% url 'blog:index' %}"><img src="{% static 'blog/logo.png' %}"></a>
+            <a href="{% url 'blog:index' %}"><img src="{% static 'blog/photos/logo.png' %}"></a>
             {% block header_content %}{% endblock header_content %}
         </div>
         <div class="header-end">
@@ -54,6 +48,12 @@
                     <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
                 {% endfor %}
             {% endif %}
+
+            <div class="banner-container">
+                <div class="baner-content">
+                    <a href="{% url 'blog:index' %}"><img src="{% static 'blog/photos/f401.png' %}"></a>
+                </div>
+            </div>
         </div>
         <div class="main-container">
             {% block main_content %}{% endblock main_content %}

@@ -60,7 +60,7 @@ def index(request):
 
 def show_topic_list(request):
     
-    (pub_topics, user_topics, friends_topics ) = get_topics_data(request)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
 
     return render(request, 'blog/show_topic_list.html', {
         'user_topics':user_topics,
@@ -103,7 +103,8 @@ def edit_entry(request, entry_id):
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
 
     topic = entry.topic
-    if topic.user != request.user:
+    
+    if topic.user != request.user and topic.permision != topic.Permissions.FOR_ALL and topic.permision != topic.Permissions.GROUP and not topic in friends_topics:
         return Http404("It is forbidden")
     
     if request.method == 'POST':
@@ -120,7 +121,8 @@ def edit_entry(request, entry_id):
         'entry':entry,
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
-        'pub_aside_topics': pub_topics[:7]
+        'pub_aside_topics': pub_topics[:7],
+        'edit':topic.user == request.user
     })
 
 
@@ -162,12 +164,10 @@ def remove_topic(request, topic_id):
     })
     
 
-
-
 @login_required
 def remove_entry(request, entry_id):
     
-    entry = get_object_or_404(Entry, pk=entry_id )
+    entry = get_object_or_404(Entry, pk=entry_id)
     if entry.topic.user == request.user:
         text = entry.text[:40]
         entry.delete()

@@ -1,14 +1,9 @@
 {% extends 'blog/layout.html' %}
 {% load static %}
 
-
 {% block header_content %}
     <a href="{% url 'blog:show_topic_list' %}"> Topics</a>
 {% endblock header_content %}
-
-{% block aside_content %}
-
-{% endblock aside_content %}
 
 
 {% block main_content %}
@@ -17,7 +12,7 @@
   <button class="prev-button slider-button" onclick='slidePrev()'><</button>
   <div class="slider-card">
     {% for slidecard in slidecards %}
-    <a class="slide">
+    <a href="{% url 'blog:edit_entry' slidecard.id %}" class="slide">
       {{ slidecard.text }}
     </a>
     {% endfor %}

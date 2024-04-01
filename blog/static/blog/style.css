@@ -44,12 +44,12 @@ a:visited {
 }
 
 
-span {
+.header-wrap span {
     color: rgb(163, 179, 194);
 }
 
 
-img {
+.header-wrap img {
     max-width: 100px;
     height: auto;
     margin-right: auto;
@@ -73,7 +73,6 @@ a:hover {
 .body-wrap {
     display: flex;
     flex-direction: row;
-    margin: 3rem 0;
     width: 100%;
     min-height: 90vh;
 }
@@ -91,6 +90,7 @@ a:hover {
 .aside-container {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+    margin-top: 3rem;
 }
 
 .aside-container a {
@@ -113,7 +113,7 @@ hr {
     align-items: center;
     flex-direction: column;
     justify-content: flex-start;
-    flex: 1 1 60%;
+    flex: 1 0 70%;
     margin: 0 4rem 4rem 2rem;
     background-color: white;
     border-radius: 10px;
@@ -304,4 +304,35 @@ form select {
 
 .page-selector a:hover {
     text-decoration: underline;
+}
+
+.baner-content {
+    width: 150%;
+    margin: 2rem 0;
+    padding: 0;
+    width: 90%;
+    opacity: 0.9;
+}
+
+.baner-content:hover {
+    opacity: 1;
+}
+
+.baner-content img {
+    width: 200px;
+    transform: none;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+    margin-left: -3rem;
+}
+
+.banner-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    margin: 4rem 0;
 }

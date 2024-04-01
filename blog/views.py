@@ -95,7 +95,6 @@ def new_topic(request):
     })
 
 
-
 @login_required
 def edit_entry(request, entry_id):
     
@@ -169,29 +168,36 @@ def remove_topic(request, topic_id):
 def remove_entry(request, entry_id):
     
     entry = get_object_or_404(Entry, pk=entry_id )
-    entry_name = entry.name
     if entry.topic.user == request.user:
-        entry.delete()     
+        text = entry.text[:40]
+        entry.delete()
         return render(request, 'blog/message.html', {
-            'message_str': f'Entry "{entry_name}" removed'
+            'message_str': f'Entry "{text}..." removed'
         })
         
     return Http404("It is forbidden")
 
 
-def show_topic(request, topic_id):
 
+def show_topic(request, topic_id, topic_start = 0, per_page=5):
+    num_list = []
     topic = get_object_or_404(Topic, pk=topic_id)
-    
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
-    entries = topic.entries.order_by('-date_added')
 
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    entries_num = topic.entries.count()
+    if entries_num / per_page >= 2:
+        num_list = [i+1 for i in range(0, entries_num-1, per_page)]
+    else:
+        per_page = entries_num
+    entries = topic.entries.order_by('-date_added')[topic_start:topic_start+per_page]
+    
     return render(request, 'blog/show_topic.html', {
         'topic':topic,
         'entries':entries,
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
-        'pub_aside_topics': pub_topics[:7]
+        'pub_aside_topics': pub_topics[:7],
+        'num_list':num_list
     })
 
 

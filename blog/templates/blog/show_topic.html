@@ -14,9 +14,8 @@
 
 {% block main_content %}
 
-
     <h3> {{ topic }} </h3>
-
+    
     {% for entry in entries %}
     <div class="entry">
         <div class="entry-header">
@@ -28,11 +27,16 @@
 
         <div class="entry-text"> 
            {{ entry.text|linebreaks }}   
-         </div>
+        </div>
     </div>
     {% empty %}
         <p> There are no entries yet </p>
     {% endfor %}
+    <div class="page-selector">
+        {% for num in num_list %}
+            <a href="{% url 'blog:show_topic_num' topic.id num %}" > {{num}} </a>
+        {% endfor %}
+    </div>
 
 
     

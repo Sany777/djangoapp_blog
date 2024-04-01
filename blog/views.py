@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden
 
@@ -19,11 +19,11 @@ def get_topics_data(request):
         user_topics = request.user.topics.order_by('-pk')
         user_groups = request.user.group_set.all()
         if user_groups:
-            friends = [user for group in user_groups for user in group.user.all()]
+            friends = [user for group in user_groups for user in group.user.exclude(username=request.user.username)]
             if friends:
                 friends_topics = [topic for friend in friends for topic in friend.topics.order_by('-pk')]
 
-    return (pub_topics, user_topics, friends_topics)
+    return (pub_topics or [], user_topics, friends_topics)
 
 
 def get_entry_from_topics(topics):
@@ -57,7 +57,7 @@ def index(request):
     })
 
 
-# @login_required
+
 def show_topic_list(request):
     (pub_topics, user_topics, friends_topics ) = get_topics_data(request)
 
@@ -71,7 +71,7 @@ def show_topic_list(request):
     })
 
 
-# @login_required
+@login_required
 def new_topic(request):
 
     if request.method != 'POST':
@@ -89,11 +89,11 @@ def new_topic(request):
     })
 
 
-# @login_required
+
+@login_required
 def edit_entry(request, entry_id):
 
-
-    entry = Entry.objects.get(pk=entry_id)
+    entry = get_object_or_404(Entry, pk=entry_id, user=request.user)
     topic = entry.topic
     if topic.user != request.user:
         return redirect('blog:index', topic.id)
@@ -110,12 +110,13 @@ def edit_entry(request, entry_id):
         'form':form,
         'topic':topic,
         'entry':entry,
-        'message':'Edit entry'
     })
 
+
+@login_required
 def new_entry(request, topic_id):
 
-    topic = Topic.objects.get(pk=topic_id)
+    topic = get_object_or_404(Topic, pk=topic_id, user=request.user)
 
     if request.method == 'POST':
         form = EntryForm(data=request.POST)
@@ -133,14 +134,35 @@ def new_entry(request, topic_id):
         'message':'New entry'
     })
 
-def remove_topic(request):
-    pass
 
-# @login_required
+@login_required
+def remove_topic(request, topic_id):
+    topic = get_object_or_404(Topic, pk=topic_id, user=request.user)
+    topic_name = topic.text
+    topic.delete()
+    return render(request, 'blog/message.html', {
+        'message_str': f"{topic_name} removed"
+    })
+
+
+
+@login_required
+def remove_entry(request, entry_id):
+    
+    entry = get_object_or_404(Entry, pk=entry_id )
+    entry_name = entry.name
+    if entry.topic.user == request.user:
+        entry.delete()     
+        return render(request, 'blog/message.html', {
+            'message_str': f"{entry_name} removed"
+        })
+        
+    return Http404("Forbied")
+
+
 def show_topic(request, topic_id):
 
-    # topic = Topic.objects.filter(user=request.user).get(pk=topic_id)
-    topic = Topic.objects.get(pk=topic_id)
+    topic = get_object_or_404(Topic, pk=topic_id)
     entries = topic.entries.order_by('-date_added')
 
     return render(request, 'blog/show_topic.html', {

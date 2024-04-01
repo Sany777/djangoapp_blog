@@ -257,3 +257,9 @@ textarea:focus {
 ul {
     width: 50%;
 }
+
+.message-container {
+    text-align: center;
+    margin-top: 4rem;
+
+}

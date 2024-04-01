@@ -1,4 +1,5 @@
-(()=>{
+(function showFirstCardElement()
+{
     let firstEl = document.querySelector(".slide")
     if( firstEl ){
         firstEl.classList.add("active");

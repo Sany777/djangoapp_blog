@@ -15,6 +15,7 @@
         {{ form.as_p }}
         <button>Submit</button>
     </form>
+    <a class="danger" href="{% url 'blog:remove_entry' entry.id %}">Remove entry</a>
     <script rel="script" src="{% static 'blog/edit_script.js' %}"></script>
 {% endblock main_content %}
 

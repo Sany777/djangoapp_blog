@@ -1,0 +1,12 @@
+{% extends 'blog/layout.html' %}
+{% load static %}
+
+
+{% block main_content %}
+
+    <p class="message-container">
+        {{ message_str }}
+    </p>
+
+<script rel="script" src="{% static 'blog/message_script.js' %}"></script>
+{% endblock main_content %}

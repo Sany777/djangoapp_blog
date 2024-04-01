@@ -103,8 +103,9 @@ a:hover {
     color: #444;
 }
 
-.aside-container hr {
+hr {
     width: 80%;
+    color: #444;
 }
 
 .main-container {
@@ -246,4 +247,13 @@ textarea:focus {
 
 .aside-title {
     font-size: 1rem;
+}
+
+.topic-title {
+    align-self: flex-start;
+    margin-left: 2rem;
+}
+
+ul {
+    width: 50%;
 }

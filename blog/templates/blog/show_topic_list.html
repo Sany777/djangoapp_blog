@@ -12,8 +12,7 @@
 {% block main_content %}
     {% if user.is_authenticated %}
         {% if user_topics %}
-            <h3> My Topic </h3>
-            <hr>
+            <h3 class="topic-title"> My Topic </h3>
             <ul>
             {% for topic in user_topics %}
                 <li>
@@ -26,8 +25,7 @@
         {% endif %}
     {% endif %}
     {% if pub_topics %}
-    <h3>Public topics</h3>
-    <hr>
+        <h3 class="topic-title">Public topics</h3>
         <ul>
         {% for topic in pub_topics %}
             <li>
@@ -40,8 +38,7 @@
     {% endif %}
 
     {% if friends_topics %}
-    <h3>Friends topics</h3>
-    <hr>
+        <h3 class="topic-title">Friends topics</h3>
         <ul>
         {% for topic in friends_topics %}
             <li>
@@ -50,7 +47,7 @@
         {% endfor %}
         </ul>
     {% else %}
-        <h3>There are no public topics</h3>
+        <h3>There are no friends topics</h3>
     {% endif %}
     
 {% endblock main_content %}

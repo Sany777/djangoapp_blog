@@ -92,8 +92,11 @@ def new_topic(request):
 # @login_required
 def edit_entry(request, entry_id):
 
+
     entry = Entry.objects.get(pk=entry_id)
     topic = entry.topic
+    if topic.user != request.user:
+        return redirect('blog:index', topic.id)
     
     if request.method == 'POST':
         form = EntryForm(instance=entry, data=request.POST)
@@ -136,13 +139,14 @@ def remove_topic(request):
 # @login_required
 def show_topic(request, topic_id):
 
-    # topic = Topic.objects.filter(user=request.user, permision=Topic.Permissions.FOR_ALL).get(pk=topic_id)
+    # topic = Topic.objects.filter(user=request.user).get(pk=topic_id)
     topic = Topic.objects.get(pk=topic_id)
     entries = topic.entries.order_by('-date_added')
 
     return render(request, 'blog/show_topic.html', {
         'topic':topic,
         'entries':entries,
+        'own_topic':topic.user == request.user
     })
 
 

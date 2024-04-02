@@ -19,5 +19,6 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('set_rate/<int:publication_id>', views.set_rate, name='set_rate'),
     path('', views.index, name='index'),
+    path('add_friend/<int:user_id>', views.add_friend, name='add_friend')
 
 ]

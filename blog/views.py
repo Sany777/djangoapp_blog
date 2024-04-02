@@ -2,9 +2,30 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 
 from .models import *
 from .forms import *
+
+def get_friends(request):
+
+    friends = []
+    
+    user_groups = request.user.group_set.all()
+    if user_groups:
+        friends = [user for group in user_groups for user in group.user.exclude(username=request.user.username)]
+        
+    return friends
+
+def get_user_data(request):
+    
+    users = User.objects.exclude(is_superuser=True)
+    friends = get_friends(request)
+    not_friends = [user for user in users if user not in friends]
+    
+    return (friends, not_friends)
+    
+    
 
 
 def get_topics_data(request):
@@ -16,11 +37,9 @@ def get_topics_data(request):
             
     if request.user.is_authenticated:
         user_topics = request.user.topics.order_by('-pk')
-        user_groups = request.user.group_set.all()
-        if user_groups:
-            friends = [user for group in user_groups for user in group.user.exclude(username=request.user.username)]
-            if friends:
-                friends_topics = [topic for friend in friends for topic in friend.topics.order_by('-pk')]
+        friends = get_friends(request)
+        if friends:
+            friends_topics = [topic for friend in friends for topic in friend.topics.order_by('-pk')]
 
     return (pub_topics or [], user_topics, friends_topics)
 
@@ -59,11 +78,15 @@ def set_rate(request, publication_id):
 
     return JsonResponse({'error': ''})       
         
-        
+def add_friend(request, user_id):
+    
+    pass 
+
 def index(request):
     
     slidecards_entry = []
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    (friends, not_friends) = get_user_data(request)
     pub_entries = get_entry_from_topics(pub_topics)
     friends_entries = get_entry_from_topics(friends_topics)
     
@@ -83,8 +106,11 @@ def index(request):
         'slidecards':slidecards_entry,
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
-        'pub_aside_topics': pub_topics[:7]
+        'pub_aside_topics': pub_topics[:7],
+        'friends':friends, 
+        'not_friends':not_friends
     })
+
 
 
 def show_topic_list(request):
@@ -99,6 +125,7 @@ def show_topic_list(request):
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7]
     })
+
 
 
 @login_required
@@ -221,7 +248,7 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
     entries = topic.entries.order_by('-date_added')[topic_start:topic_start+per_page]
     
     form = None
-    if topic.user != request.user:
+    if topic.user != request.user and request.user.is_authenticated:
         form = RatingForm()
         
     

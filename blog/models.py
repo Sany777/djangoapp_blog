@@ -24,15 +24,6 @@ class Banner(models.Model):
     description = models.CharField(max_length=32, default="")
 
 
-class Bloger(models.Model):
-    
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    birth_date = models.DateField(null=True)
-    phone_number = models.CharField(max_length=12, validators=[is_phone_number,])
-
-    def __str__(self):
-        return self.user.username
-
 
 class Group(models.Model): 
     

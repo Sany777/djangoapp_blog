@@ -18,7 +18,9 @@ urlpatterns = [
     path('entry/<int:topic_id>/new', views.new_entry, name='new_entry'),
     path('index/', views.index, name='index'),
     path('set_rate/<int:publication_id>', views.set_rate, name='set_rate'),
+    path('removefriend/<int:user_id>', views.remove_friend, name='remove_friend'),
+    path('addfriend/<int:user_id>', views.add_friend, name='add_friend'),
+    path('social', views.social, name='social'),
     path('', views.index, name='index'),
-    path('add_friend/<int:user_id>', views.add_friend, name='add_friend')
 
 ]

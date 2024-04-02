@@ -27,13 +27,11 @@ class Banner(models.Model):
 
 class Group(models.Model): 
     
-    """group by preferences"""
-    name = models.CharField(max_length=32)
-    date_created = models.DateField(auto_now_add=True)
-    user = models.ManyToManyField(User)
+    membership  = models.ManyToManyField(User, related_name='friend_groups')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_groups')
     
     def __str__(self):
-        return self.name
+        return f"friends {self.owner}"
 
 
 class Topic(models.Model):

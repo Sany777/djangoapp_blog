@@ -2,8 +2,6 @@
 
 
 {% block header_content %}
-    <a href="{% url 'blog:index' %}"> Home </a><span>></span>
-    <a href="{% url 'blog:show_topic_list' %}"> Topics </a>
     {% if topic.user == user %}
         <span>></span><a href="{% url 'blog:new_topic' %}"> New topic </a>
         <span>/</span><a href="{% url 'blog:new_entry' topic.id %}"> New entry</a>
@@ -61,7 +59,5 @@
             <a href="{% url 'blog:show_topic_num' topic.id num %}" > {{num}} </a>
         {% endfor %}
     </div>
-
-
     
 {% endblock main_content %}

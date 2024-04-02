@@ -11,18 +11,22 @@ def get_friends(request):
 
     friends = []
     
-    user_groups = request.user.group_set.all()
+    user_groups = request.user.friend_groups.all()
     if user_groups:
-        friends = [user for group in user_groups for user in group.user.exclude(username=request.user.username)]
+        friends = [user for group in user_groups for user in group.membership.all()]
         
     return friends
 
 def get_user_data(request):
     
-    users = User.objects.exclude(is_superuser=True)
-    friends = get_friends(request)
-    not_friends = [user for user in users if user not in friends]
+    friends = []
+    not_friends = []
     
+    if request.user.is_authenticated:
+        users = User.objects.exclude(is_superuser=True, pk=request.user.id )
+        friends = get_friends(request)
+        not_friends = [user for user in users if user not in friends]
+        
     return (friends, not_friends)
     
     
@@ -78,15 +82,55 @@ def set_rate(request, publication_id):
 
     return JsonResponse({'error': ''})       
         
+        
+@login_required
 def add_friend(request, user_id):
     
-    pass 
+    group = None
+    friend = get_object_or_404(User, pk=user_id)
+    try:
+        group = Group.objects.get(owner=request.user)
+    except Group.DoesNotExist:
+        group = Group(owner=request.user)
+        group.save()
+
+    group.membership.set([friend])   
+    # group.save()
+
+    return redirect('blog:social' )
+
+@login_required
+def remove_friend(request, user_id):
+    
+    user_to_remove = get_object_or_404(User, pk=user_id)
+    
+    group = get_object_or_404(Group, owner=request.user)
+    group.membership.remove(user_to_remove)
+
+    
+    return redirect('blog:social' )
+    
+    
+@login_required   
+def social(request):
+    
+    (friends, not_friends) = get_user_data(request)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    
+    return render(request, 'blog/social.html', {
+        'friends':friends,
+        'not_friends':not_friends,
+        'user_aside_topics':user_topics[:7],
+        'friends_aside_topics':friends_topics[:7],
+        'pub_aside_topics': pub_topics[:7],
+    })
+
 
 def index(request):
     
     slidecards_entry = []
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
-    (friends, not_friends) = get_user_data(request)
+    
     pub_entries = get_entry_from_topics(pub_topics)
     friends_entries = get_entry_from_topics(friends_topics)
     
@@ -107,8 +151,6 @@ def index(request):
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7],
-        'friends':friends, 
-        'not_friends':not_friends
     })
 
 
@@ -251,8 +293,6 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
     if topic.user != request.user and request.user.is_authenticated:
         form = RatingForm()
         
-    
-    
     return render(request, 'blog/show_topic.html', {
         'topic':topic,
         'entries':entries,

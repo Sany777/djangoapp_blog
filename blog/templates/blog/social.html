@@ -1,0 +1,21 @@
+{% extends 'blog/layout.html' %}
+
+
+{% block main_content %}
+    {% if friends %}
+        <h2 class="title">Friends</h2>
+        {% for friend in friends %}
+            <p class="aside-str">{{friend}}</p ><a class="danger" href="{% url 'blog:remove_friend' friend.id %}" class="aside-content">Remove</a>
+        {% endfor %}
+    {% else %}
+        <h2 class="title">No friends</h2>
+    {% endif %}
+
+    <h2 class="title">All users</h2>
+    {% for not_friend in not_friends %}
+
+        <p class="aside-str">{{not_friend}}</p ><a class="danger" href="{% url 'blog:add_friend' not_friend.id %}" class="aside-content">Add</a>
+
+    {% endfor %}
+
+{% endblock main_content %}

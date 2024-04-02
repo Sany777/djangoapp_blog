@@ -2,7 +2,6 @@
 
 
 {% block header_content %}
-<a href="{% url 'blog:index' %}"> Home </a>
     {% if user.is_authenticated %}
         <span>></span><a href="{% url 'blog:new_topic' %}">New topic</a>
     {% endif %}

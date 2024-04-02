@@ -11,6 +11,11 @@
     <div class="header-wrap">
         <div class="header-start">
             <a href="{% url 'blog:index' %}"><img src="{% static 'blog/photos/logo.png' %}"></a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'blog:index' %}"> Home </a>
+                <a href="{% url 'blog:social' %}"> Social</a>
+                <a href="{% url 'blog:show_topic_list' %}"> Topics </a>
+            {% endif %}
             {% block header_content %}{% endblock header_content %}
         </div>
         <div class="header-end">
@@ -27,13 +32,7 @@
     <div class="body-wrap">
         <div class="aside-container">
             {% block aside_content %}{% endblock aside_content %}
-            {% if friends_aside_topics %}
-                <p class="aside-title">Friends topics</p>
-                <hr>
-                {% for topic in friends_aside_topics %}
-                    <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
-                {% endfor %}
-            {% endif %}
+
             {% if pub_aside_topics %}
                 <p class="aside-title">Public topics</p>
                 <hr>
@@ -41,6 +40,15 @@
                     <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
                 {% endfor %}
             {% endif %}
+
+            {% if friends_aside_topics %}
+                <p class="aside-title">Friends topics</p>
+                <hr>
+                {% for topic in friends_aside_topics %}
+                    <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
+                {% endfor %}
+            {% endif %}
+
             {% if user_aside_topics %}
                 <p class="aside-title">My topics</p>
                 <hr>
@@ -48,18 +56,7 @@
                     <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
                 {% endfor %}
             {% endif %}
-            {% if friends %}
-                <p class="aside-title">Friends</p>
-                {% for friend in friends %}
-                    <a href="{% url 'blog:add_friend' friend.id %}">{{friend}}</a>
-                {% endfor %}
-            {% else %}
-            <p class="aside-title">No friends</p>
-            {% endif %}
-            <p class="aside-title">All users</p>
-            {% for not_friend in not_friends %}
-                <a href="{% url 'blog:add_friend' not_friend.id %}">{{not_friend}}</a>
-            {% endfor %}
+ 
             <div class="banner-container">
                 <div class="baner-content">
                     <a href="{% url 'blog:index' %}"><img src="{% static 'blog/photos/f401.png' %}"></a>

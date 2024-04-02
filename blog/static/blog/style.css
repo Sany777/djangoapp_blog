@@ -95,7 +95,6 @@ a:hover {
 
 .aside-container a {
     color: #777;
-    padding-left: 3rem;
 }
 
 .aside-container a:hover {
@@ -259,7 +258,7 @@ ul {
 }
 
 .danger {
-    color: darkred;
+    color: darkred !important;
 }
 
 .message-container {
@@ -386,4 +385,18 @@ label[for="id_rating"] {
     flex-grow: 10px;
     align-items: baseline;
     justify-content: space-between;
+}
+
+.aside-str {
+    margin: 0 1rem;
+    width: min-content;
+}
+
+.aside-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    margin-left: -3rem;
 }

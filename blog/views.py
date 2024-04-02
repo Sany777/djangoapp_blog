@@ -29,7 +29,32 @@ def get_topics_data(request):
 def get_entry_from_topics(topics):
     return [entry for topic in topics for entry in topic.entries.order_by('-pk')]
 
-       
+
+from django.http import JsonResponse
+
+
+def set_rate(request, publication_id):
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        rating_value = int(request.POST.get('rating'))
+        publication = get_object_or_404(Entry, pk=publication_id)
+
+        if Rating.objects.filter(publication=publication, user=request.user).exists():
+            return JsonResponse({'error': 'Ви вже голосували за цю публікацію'})
+
+        rating = Rating(publication=publication, rating=rating_value, user=request.user)
+        rating.save()
+        publication_ratings = Rating.objects.filter(publication=publication)
+        total_ratings = publication_ratings.count()
+        total_score = sum([rating.rating for rating in publication_ratings])
+        average_rating = total_score / total_ratings if total_ratings > 0 else 0
+        publication.average_rating = average_rating
+        publication.save()
+
+        return JsonResponse({'success': 'Рейтинг збережено успішно'})
+    else:
+        return JsonResponse({'error': 'Неприпустимий запит'})       
+        
+        
 def index(request):
     
     slidecards_entry = []
@@ -191,13 +216,19 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
         per_page = entries_num
     entries = topic.entries.order_by('-date_added')[topic_start:topic_start+per_page]
     
+    form = None
+    if topic.user != request.user:
+        form = RatingForm()
+    
+    
     return render(request, 'blog/show_topic.html', {
         'topic':topic,
         'entries':entries,
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7],
-        'num_list':num_list
+        'num_list':num_list,
+        'form':form
     })
 
 

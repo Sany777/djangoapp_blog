@@ -20,3 +20,20 @@ class EntryForm(forms.ModelForm):
         fields = ['text']
         labels = {'text':''}
         widgets = {'text':forms.Textarea(attrs={'cols':80,'id': 'auto-resize'})}
+       
+       
+       
+       
+RATING_CHOICES = [(i, str(i)) for i in range(11)]
+
+class RatingForm(forms.ModelForm):
+    rating = forms.ChoiceField(
+        label='Оцінка',
+        choices=RATING_CHOICES,
+    )
+
+    class Meta:
+        model = Entry
+        fields = ['rating']
+        
+         

@@ -33,6 +33,14 @@
         <div class="entry-text"> 
            {{ entry.text|linebreaks }}   
         </div>
+        {% if form %}
+            <form class="ratingForm" method="post" action="{% url 'blog:set_rate' entry.id %}" >
+                {% csrf_token %}
+                <input type="hidden" name="publication_id" value="{{ entry.id }}">
+                {{ form.as_p }}
+                <button type="submit">Голосувати</button>
+            </form>
+        {% endif %}
     </div>
     {% empty %}
         <p> There are no entries yet </p>

@@ -19,15 +19,14 @@ def is_phone_number(phone_num):
 
 class Banner(models.Model):
     link = models.URLField()
-    image = models.ImageField(upload_to='photos/')  
+    image = models.ImageField(upload_to='blog/static/photos/')  
     description = models.CharField(max_length=32, default="")
 
 
 class Bloger(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(blank=True)
-    birth_date = models.DateField(blank=True, null=True)
-    phone_number = models.CharField(max_length=12, validators=[is_phone_number,],blank=True)
+    birth_date = models.DateField(null=True)
+    phone_number = models.CharField(max_length=12, validators=[is_phone_number,])
 
     def __str__(self):
         return self.user.username
@@ -36,7 +35,6 @@ class Bloger(models.Model):
 class Group(models.Model): 
     """group by preferences"""
     name = models.CharField(max_length=32)
-    image = models.ImageField(blank=True)  
     date_created = models.DateField(auto_now_add=True)
     user = models.ManyToManyField(User)
     
@@ -65,9 +63,6 @@ class Entry(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE,related_name='entries')
     date_added = models.DateTimeField(auto_now_add=True)
 
-    scores = models.BigIntegerField(null=True)
-    score_num = models.IntegerField(null=True)
-
     def __str__(self):
         if len(self.text) > 50:
             return f"{self.text[:50]}..." 
@@ -82,3 +77,15 @@ class ServiceContent(models.Model):
     
     def __str__(self):
         return self.name
+    
+    
+class Rating(models.Model):
+    publication = models.ForeignKey(Entry, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0)
+         
+    class Meta:
+        unique_together = ('publication', 'user')
+        
+    def __str__(self):
+        return f"{self.publication} - {self.user.username}: {self.rating}"

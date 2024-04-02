@@ -17,5 +17,7 @@ urlpatterns = [
     path('entry/<int:entry_id>/edit', views.edit_entry, name='edit_entry'),
     path('entry/<int:topic_id>/new', views.new_entry, name='new_entry'),
     path('index/', views.index, name='index'),
+    path('set_rate/<int:publication_id>', views.set_rate, name='set_rate'),
     path('', views.index, name='index'),
+
 ]

@@ -43,8 +43,32 @@ function moveBox(event){
 
 document.addEventListener("keydown", moveBox);
 
+document.querySelectorAll('.ratingForm').forEach(function(form) {
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let form = this;
+        let formData = new FormData(form);
+        let xhr = new XMLHttpRequest();
+        xhr.open(form.method, form.action, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    document.getElementById('ratingResponse').innerText = response.success;
+                    window.location.reload();
+                } else if (response.error) {
+                    document.getElementById('ratingResponse').innerText = response.error;
+                }
+            }
+        };
+        xhr.send(formData);
+    } )
+})
 
 
+
+        
 
 // var modal = document.getElementById("myModal");
 // var closeBtn = document.getElementsByClassName("close")[0];

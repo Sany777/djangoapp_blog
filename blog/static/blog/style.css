@@ -338,13 +338,11 @@ form select {
 }
 
 .ratingForm {
-    position: relative;
-    margin: 1rem 1rem 1rem auto;
-    display: flex;
-    align-items: center;
-    width: fit-content;
-    flex-direction: row;
-    flex-grow: 10px;
+    min-width: fit-content;
+}
+
+.ratingForm p {
+    display: inline;
 }
 
 .ratingForm button {
@@ -370,7 +368,21 @@ form select {
     background-color: transparent;
 }
 
-label {
+label[for="id_rating"] {
+    display: none;
+}
+
+.raiting {
     color: #444;
-    font-size: 10px;
+    font-size: 14px;
+}
+
+.entry-footer {
+    position: relative;
+    margin: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 10px;
+    align-items: baseline;
+    justify-content: space-between;
 }

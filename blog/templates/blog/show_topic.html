@@ -33,14 +33,25 @@
         <div class="entry-text"> 
            {{ entry.text|linebreaks }}   
         </div>
-        {% if form %}
-            <form class="ratingForm" method="post" action="{% url 'blog:set_rate' entry.id %}" >
-                {% csrf_token %}
-                <input type="hidden" name="publication_id" value="{{ entry.id }}">
-                {{ form.as_p }}
-                <button type="submit">Голосувати</button>
-            </form>
-        {% endif %}
+        <div class="entry-footer">
+
+            <p class="raiting entry_{{entry.id}}">
+                {% if entry.avg_rating == -1 %}
+                    Без оцінок
+                {% else %}
+                    Оцінка: {{entry.avg_rating}}
+                {% endif %}
+            </p>
+            {% if form %}
+                <form class="ratingForm" method="post" action="{% url 'blog:set_rate' entry.id %}" >
+                    {% csrf_token %}
+                    <input type="hidden" name="publication_id" value="{{ entry.id }}">
+                    {{ form.as_p }}
+                    <button type="submit">Оцінити</button>
+                </form>
+            {% endif %}
+
+        </div>
     </div>
     {% empty %}
         <p> There are no entries yet </p>

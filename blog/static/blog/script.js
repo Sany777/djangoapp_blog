@@ -47,6 +47,7 @@ document.querySelectorAll('.ratingForm').forEach(function(form) {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         let form = this;
+        const entry_id = form.publication_id.value;
         let formData = new FormData(form);
         let xhr = new XMLHttpRequest();
         xhr.open(form.method, form.action, true);
@@ -55,10 +56,7 @@ document.querySelectorAll('.ratingForm').forEach(function(form) {
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
                 if (response.success) {
-                    document.getElementById('ratingResponse').innerText = response.success;
-                    window.location.reload();
-                } else if (response.error) {
-                    document.getElementById('ratingResponse').innerText = response.error;
+                    document.querySelector('.entry_'+entry_id).innerText = "Оцінка: " + response.success;  
                 }
             }
         };
@@ -67,20 +65,3 @@ document.querySelectorAll('.ratingForm').forEach(function(form) {
 })
 
 
-
-        
-
-// var modal = document.getElementById("myModal");
-// var closeBtn = document.getElementsByClassName("close")[0];
-
-// modal.style.display = "block";
-
-// closeBtn.onclick = function() {
-//   modal.style.display = "none";
-// }
-
-// window.onclick = function(event) {
-//   if (event.target == modal) {
-//     modal.style.display = "none";
-//   }
-// }

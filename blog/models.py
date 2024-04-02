@@ -18,12 +18,14 @@ def is_phone_number(phone_num):
 
 
 class Banner(models.Model):
+    
     link = models.URLField()
     image = models.ImageField(upload_to='blog/static/photos/')  
     description = models.CharField(max_length=32, default="")
 
 
 class Bloger(models.Model):
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     birth_date = models.DateField(null=True)
     phone_number = models.CharField(max_length=12, validators=[is_phone_number,])
@@ -33,6 +35,7 @@ class Bloger(models.Model):
 
 
 class Group(models.Model): 
+    
     """group by preferences"""
     name = models.CharField(max_length=32)
     date_created = models.DateField(auto_now_add=True)
@@ -62,7 +65,8 @@ class Entry(models.Model):
     text = models.TextField()
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE,related_name='entries')
     date_added = models.DateTimeField(auto_now_add=True)
-
+    avg_rating = models.IntegerField(default=-1)
+    
     def __str__(self):
         if len(self.text) > 50:
             return f"{self.text[:50]}..." 
@@ -71,6 +75,7 @@ class Entry(models.Model):
         
 
 class ServiceContent(models.Model):
+    
     name = models.CharField(max_length=200)
     text = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
@@ -80,6 +85,7 @@ class ServiceContent(models.Model):
     
     
 class Rating(models.Model):
+    
     publication = models.ForeignKey(Entry, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)

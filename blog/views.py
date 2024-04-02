@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden
-
-from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 from .models import *
 from .forms import *
@@ -30,29 +29,35 @@ def get_entry_from_topics(topics):
     return [entry for topic in topics for entry in topic.entries.order_by('-pk')]
 
 
-from django.http import JsonResponse
-
 
 def set_rate(request, publication_id):
+    
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         rating_value = int(request.POST.get('rating'))
-        publication = get_object_or_404(Entry, pk=publication_id)
-
-        if Rating.objects.filter(publication=publication, user=request.user).exists():
-            return JsonResponse({'error': 'Ви вже голосували за цю публікацію'})
-
-        rating = Rating(publication=publication, rating=rating_value, user=request.user)
-        rating.save()
-        publication_ratings = Rating.objects.filter(publication=publication)
+        entry = get_object_or_404(Entry, pk=publication_id)
+        
+        publication_rating = None
+        
+        if Rating.objects.filter(publication=entry, user=request.user).exists():
+            publication_rating = Rating.objects.get(publication=entry, user=request.user)
+            publication_rating.rating = rating_value;
+        else:     
+            publication_rating = Rating(publication=entry, rating=rating_value, user=request.user)
+            
+        publication_rating.save()
+        publication_ratings = Rating.objects.filter(publication=entry)  
         total_ratings = publication_ratings.count()
-        total_score = sum([rating.rating for rating in publication_ratings])
-        average_rating = total_score / total_ratings if total_ratings > 0 else 0
-        publication.average_rating = average_rating
-        publication.save()
+        
+        if total_ratings != 0:
+            total_score = sum([rating.rating for rating in publication_ratings])
+            rating_value = total_score / total_ratings if total_ratings > 0 else 0
+            
+        entry.avg_rating = rating_value
+        entry.save()
 
-        return JsonResponse({'success': 'Рейтинг збережено успішно'})
-    else:
-        return JsonResponse({'error': 'Неприпустимий запит'})       
+        return JsonResponse({'success': rating_value})
+
+    return JsonResponse({'error': ''})       
         
         
 def index(request):
@@ -80,7 +85,6 @@ def index(request):
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7]
     })
-
 
 
 def show_topic_list(request):
@@ -219,6 +223,7 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
     form = None
     if topic.user != request.user:
         form = RatingForm()
+        
     
     
     return render(request, 'blog/show_topic.html', {

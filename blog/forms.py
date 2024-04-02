@@ -28,7 +28,6 @@ RATING_CHOICES = [(i, str(i)) for i in range(11)]
 
 class RatingForm(forms.ModelForm):
     rating = forms.ChoiceField(
-        label='Оцінка',
         choices=RATING_CHOICES,
     )
 

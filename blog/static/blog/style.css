@@ -3,6 +3,10 @@ body {
     margin: 0;
     padding: 0;
     background-color: #ddd;
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -74,11 +78,12 @@ a:hover {
     flex-direction: row;
     min-width: 1100px;
     margin: 0;
+    flex: 1;
 }
 
+
 .footer-wrap {
-    margin-top: auto;
-    padding: 0;
+    margin-top: 4rem;
     background-color: #888;
     min-height: 4rem;
     display: flex;
@@ -97,20 +102,20 @@ a:hover {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     margin-top: 3rem;
-    margin-bottom: auto;
 }
 
 .aside-container a {
-    color: #777;
+    font-size: 1rem;
+    color: #666;
 }
 
 .aside-container a:hover {
-    color: #444;
+    color: black;
 }
 
 hr {
     width: 80%;
-    color: #444;
+    color: #333;
 }
 
 .main-container {
@@ -120,7 +125,7 @@ hr {
     flex-direction: column;
     justify-content: flex-start;
     flex: 1 1 80%;
-    margin: 0 4rem 4rem 2rem;
+    margin: 0 3rem 4rem 2rem;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
@@ -128,9 +133,14 @@ hr {
 }
 
 .card-container {
-    width: 80%;
-    height: min-content;
-    padding: 2rem;
+    width: 60%;
+    padding: 4rem;
+}
+
+.card-container {
+    width: 60%;
+    text-align: justify;
+    text-indent: 1.5em;
 }
 
 .empty-message {
@@ -217,11 +227,11 @@ hr {
 }
 
 textarea {
-    color: blue;
+    color: rgb(0, 0, 255);
     border: none;
     resize: none;
     background-image:
-        linear-gradient(rgba(0, 0, 0, 0.2) 1px, transparent 1px);
+        linear-gradient(rgba(0, 0, 0, 0.2) 1px, white 1px);
     background-size: 100% 20px;
     font-size: 17px;
     padding: 0px 1rem;
@@ -325,7 +335,7 @@ form select {
 
 .baner-content a img {
     min-width: 100px;
-    max-width: 150%;
+    max-width: 100%;
     transform: none;
     height: auto;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);

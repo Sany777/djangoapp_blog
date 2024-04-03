@@ -134,6 +134,11 @@ def index(request):
 
     slidecards_entry = []
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    
+    try:
+        description = ServiceContent.objects.get(name='description')
+    except ServiceContent.DoesNotExist:
+        pass
 
     pub_entries = get_entry_from_topics(pub_topics)
     friends_entries = get_entry_from_topics(friends_topics)
@@ -146,11 +151,11 @@ def index(request):
     if len(friends_entries) > 0:
         friends_entries = friends_entries[:10]
  
-
     if len(friends_entries) >0 or len(pub_entries) >0:
             slidecards_entry = (friends_entries + pub_entries)[:10]
             
     return render(request, 'blog/index.html', {
+        'description':description,
         'slidecards':slidecards_entry,
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
@@ -207,7 +212,6 @@ def edit_topic(request, topic_id = None):
     })
 
 
-@login_required
 def edit_entry(request, entry_id):
     
     entry = get_object_or_404(Entry, pk=entry_id)
@@ -215,7 +219,6 @@ def edit_entry(request, entry_id):
     
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
 
-    
     if topic.user != request.user and topic.permision != topic.Permissions.FOR_ALL and topic.permision != topic.Permissions.GROUP and not topic in friends_topics:
         return Http404("It is forbidden")
     

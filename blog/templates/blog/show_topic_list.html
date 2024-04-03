@@ -32,21 +32,21 @@
             </li>
         {% endfor %}
         </ul>
-    {% else %}
+    {% elif not friends_topics %}
         <h3>There are no public topics</h3>
     {% endif %}
-
-    {% if friends_topics %}
-        <h3 class="topic-title">Friends topics</h3>
-        <ul>
-        {% for topic in friends_topics %}
-            <li>
-                <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <h3>There are no friends topics</h3>
-    {% endif %}
-    
+    {% if user.is_authenticated %}
+        {% if friends_topics %}
+            <h3 class="topic-title">Friends topics</h3>
+            <ul>
+            {% for topic in friends_topics %}
+                <li>
+                    <a href="{% url 'blog:show_topic' topic.id %}">{{topic}}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <h3>There are no friends topics</h3>
+        {% endif %}
+    {% endif %}   
 {% endblock main_content %}

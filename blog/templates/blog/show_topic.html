@@ -53,7 +53,9 @@
         </div>
     </div>
     {% empty %}
-        <a href="{% url 'blog:new_entry' topic.id %}"> Create a new entry</a>
+        {% if topic.user == user %}
+            <a href="{% url 'blog:new_entry' topic.id %}"> Create a new entry</a>
+        {% endif %}
     {% endfor %}
     <div class="page-selector">
         {% for num in num_list %}

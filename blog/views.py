@@ -47,7 +47,7 @@ def get_topics_data(request):
         user_topics = request.user.topics.order_by('-pk')
         friends = get_friends(request)
         if friends:
-            friends_topics = [topic for friend in friends for topic in friend.topics.order_by('-pk')]
+            friends_topics = [topic for friend in friends for topic in friend.topics.order_by('-pk') if topic.permision != Topic.Permissions.PRIVATE]
             pub_topics = [topic for topic in pub_topics if topic not in friends_topics]
 
     return (pub_topics, user_topics, friends_topics)
@@ -183,6 +183,10 @@ def edit_topic(request, topic_id = None):
     if request.method != 'POST':
         if topic_id != None:
             topic = get_object_or_404(Topic, pk=topic_id)
+            if request.user.id != topic.user.id:    
+                return render(request, 'blog/message.html', {
+                        'message_str': f'You are not allowed to modify "{topic}" topic'
+                    })
             form = TopicForm(instance=topic)
         else:
             form = TopicForm()
@@ -207,15 +211,19 @@ def edit_topic(request, topic_id = None):
 def edit_entry(request, entry_id):
     
     entry = get_object_or_404(Entry, pk=entry_id)
+    topic = entry.topic
     
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
 
-    topic = entry.topic
     
     if topic.user != request.user and topic.permision != topic.Permissions.FOR_ALL and topic.permision != topic.Permissions.GROUP and not topic in friends_topics:
         return Http404("It is forbidden")
     
     if request.method == 'POST':
+        if request.user.id != topic.user.id:    
+            return render(request, 'blog/message.html', {
+                    'message_str': f'You are not allowed to modify "{topic}" topic'
+                })
         form = EntryForm(instance=entry, data=request.POST)
         if form.is_valid():
             form.save()
@@ -263,14 +271,15 @@ def new_entry(request, topic_id):
 @login_required
 def remove_topic(request, topic_id):
     
-    topic = get_object_or_404(Topic, pk=topic_id, user=request.user)
-    
-    topic_name = topic.text
-    topic.delete()
+    topic = get_object_or_404(Topic, pk=topic_id)
+    if request.user.id == topic.id:
+        topic_name = topic.text
+        return render(request, 'blog/message.html', {
+            'message_str': f'Topic "{topic_name}" removed'
+        })
     return render(request, 'blog/message.html', {
-        'message_str': f'Topic "{topic_name}" removed'
-    })
-    
+            'message_str': f'You are not allowed to modify "{topic_name}" topic'
+        })
 
 @login_required
 def remove_entry(request, entry_id):
@@ -315,7 +324,14 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
 
 
 def about(request):
-    about = ServiceContent.objects.get(name='about')
-    return render(request, 'blog/about.html', {
-        'about':about
-    })
+    
+    try:
+        about = ServiceContent.objects.get(name='about')
+        return render(request, 'blog/about.html', {
+            'about':about
+        })
+    except ServiceContent.DoesNotExist:
+        return redirect('blog:index')
+            
+            
+    

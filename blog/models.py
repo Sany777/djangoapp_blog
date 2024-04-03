@@ -28,7 +28,7 @@ class Banner(models.Model):
 class Group(models.Model): 
     
     membership  = models.ManyToManyField(User, related_name='friend_groups')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_groups')
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='owned_groups')
     
     def __str__(self):
         return f"friends {self.owner}"

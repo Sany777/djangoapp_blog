@@ -7,15 +7,20 @@ from django.contrib.auth.models import User
 from .models import *
 from .forms import *
 
+
 def get_friends(request):
 
     friends = []
-    
-    user_groups = request.user.friend_groups.all()
-    if user_groups:
-        friends = [user for group in user_groups for user in group.membership.all()]
+    if request.user.is_authenticated:    
         
+        try:
+            user_group = Group.objects.get(owner=request.user)    
+            friends = [user for user in user_group.membership.all()]
+        except Group.DoesNotExist:
+            Group.objects.create(owner=request.user)
+
     return friends
+
 
 def get_user_data(request):
     
@@ -23,15 +28,13 @@ def get_user_data(request):
     not_friends = []
     
     if request.user.is_authenticated:
-        users = User.objects.exclude(is_superuser=True, pk=request.user.id )
+        users = User.objects.exclude(pk=request.user.id).filter(is_superuser=False)
         friends = get_friends(request)
         not_friends = [user for user in users if user not in friends]
         
     return (friends, not_friends)
     
     
-
-
 def get_topics_data(request):
     
     user_topics = []
@@ -40,17 +43,18 @@ def get_topics_data(request):
     pub_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
             
     if request.user.is_authenticated:
+        pub_topics = [topic for topic in pub_topics if topic.user != request.user]
         user_topics = request.user.topics.order_by('-pk')
         friends = get_friends(request)
         if friends:
             friends_topics = [topic for friend in friends for topic in friend.topics.order_by('-pk')]
+            pub_topics = [topic for topic in pub_topics if topic not in friends_topics]
 
-    return (pub_topics or [], user_topics, friends_topics)
+    return (pub_topics, user_topics, friends_topics)
 
 
 def get_entry_from_topics(topics):
     return [entry for topic in topics for entry in topic.entries.order_by('-pk')]
-
 
 
 def set_rate(request, publication_id):
@@ -85,36 +89,36 @@ def set_rate(request, publication_id):
         
 @login_required
 def add_friend(request, user_id):
+    user_to_add = get_object_or_404(User, pk=user_id)
     
-    group = None
-    friend = get_object_or_404(User, pk=user_id)
-    try:
-        group = Group.objects.get(owner=request.user)
-    except Group.DoesNotExist:
-        group = Group(owner=request.user)
-        group.save()
+    friends = get_friends(request)
+    if user_to_add not in friends and user_to_add.id != request.user.id:
+        group = get_object_or_404(Group, owner=request.user)
+        group.membership.add(user_to_add)
 
-    group.membership.set([friend])   
-    # group.save()
 
     return redirect('blog:social' )
+
 
 @login_required
 def remove_friend(request, user_id):
-    
+
     user_to_remove = get_object_or_404(User, pk=user_id)
     
-    group = get_object_or_404(Group, owner=request.user)
-    group.membership.remove(user_to_remove)
+    friends = get_friends(request)
+    if user_to_remove in friends:
+        group = get_object_or_404(Group, owner=request.user)
+        group.membership.remove(user_to_remove)
 
-    
     return redirect('blog:social' )
     
+    
+
     
 @login_required   
 def social(request):
     
-    (friends, not_friends) = get_user_data(request)
+    (friends, not_friends) = get_user_data(request)   
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
     
     return render(request, 'blog/social.html', {
@@ -127,13 +131,13 @@ def social(request):
 
 
 def index(request):
-    
+
     slidecards_entry = []
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
-    
+
     pub_entries = get_entry_from_topics(pub_topics)
     friends_entries = get_entry_from_topics(friends_topics)
-    
+
     if len(pub_entries) == 0:
         pub_topics = []
     else:
@@ -171,12 +175,17 @@ def show_topic_list(request):
 
 
 @login_required
-def new_topic(request):
+def edit_topic(request, topic_id = None):
     
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
-
+    form = None
+    topic = None
     if request.method != 'POST':
-        form = TopicForm()
+        if topic_id != None:
+            topic = get_object_or_404(Topic, pk=topic_id)
+            form = TopicForm(instance=topic)
+        else:
+            form = TopicForm()
     else:
         form = TopicForm(data=request.POST)
         if form.is_valid():
@@ -185,8 +194,9 @@ def new_topic(request):
             topic.save()
             return redirect('blog:show_topic', topic.id)
         
-    return render(request, 'blog/new_topic.html',{
+    return render(request, 'blog/edit_topic.html',{
         'form':form,
+        'topic':topic,
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7]

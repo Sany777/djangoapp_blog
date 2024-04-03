@@ -4,7 +4,11 @@
 {% block main_content %}
 
     <h2 class="title">
-        Create a new topic
+        {% if topic %}
+        Edit "{{topic}}"
+        {% else %}
+            Create a new topic
+        {% endif %}
     </h2>
     <form action="{% url 'blog:new_topic' %}" method="post" >
         {% csrf_token %}

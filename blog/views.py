@@ -39,39 +39,69 @@ def set_rate(request, publication_id):
     return JsonResponse({'error': ''})       
         
         
-
-    
 @login_required   
-def social(request, user_id=None):
-    
-    friends_group = FriendsGroup.objects.get(owner=request.user)
-    my_friends = friends_group.membership.all()
-    
-    candidates_group = FriendCandidates.objects.get(owner=request.user)
+def add_friend(request, user_id):
     
     all_user = User.objects.filter(is_superuser=False).exclude(pk=request.user.id)
-    requests_from_others = [candidate for candidate in all_user for u in get_obj_or_none(FriendCandidates,owner=candidate).membership.all() if u == request.user]
+    requests_from_others = [candidate for candidate in all_user for u in get_obj_or_none(FriendCandidates, owner=candidate).membership.all() if u == request.user]
+    candidate = get_object_or_404(User, pk=user_id)
     
-    my_requests = candidates_group.membership.all()
-    if  user_id != None:
-        
-        candidate = get_object_or_404(User, pk=user_id)
-        
-        if candidate in my_friends:
-            friends_group.membership.remove(candidate)
-            my_friends = friends_group.membership.all()
-        elif candidate in requests_from_others:
-            friends_group.membership.add(candidate)
-            my_friends = friends_group.membership.all()
-        else:
-            if candidate in my_requests:
-                candidates_group.membership.remove(candidate)
-            else:
-                candidates_group.membership.add(candidate)        
-            my_requests = candidates_group.membership.all()
-                   
+    if candidate in requests_from_others:
+        get_obj_or_none(FriendsGroup, owner=candidate).membership.add(request.user)
+        get_obj_or_none(FriendCandidates, owner=candidate).membership.remove(request.user)
+    return redirect('blog:social')
+
+
+
+
+@login_required   
+def remove_friend(request, user_id):
     
+    candidate = get_object_or_404(User, pk=user_id)
+    get_obj_or_none(FriendsGroup, owner=request.user).membership.remove(candidate)
+    return redirect('blog:social')
+    
+    
+@login_required   
+def add_request(request, user_id):
+    
+    candidate = get_object_or_404(User, pk=user_id)
+    my_requests = get_obj_or_none(FriendCandidates, owner=request.user)
+    
+    if candidate not in my_requests.membership.all():
+        my_requests.membership.add(candidate)
+    return redirect('blog:social')
+    
+    
+@login_required   
+def remove_request(request, user_id):
+    
+    candidate = get_object_or_404(User, pk=user_id)
+    get_obj_or_none(FriendCandidates, owner=request.user).membership.remove(candidate)
+    return redirect('blog:social')
+    
+    
+
+@login_required   
+def add_request(request, user_id):
+    
+    candidate = get_object_or_404(User, pk=user_id)
+    friends_group = get_obj_or_none(FriendsGroup, owner=request.user) 
+    my_requests = get_obj_or_none(FriendCandidates, owner=request.user)
+    if candidate not in my_requests.membership.all() and candidate not in friends_group.membership.all():
+        my_requests.membership.add(candidate)
+    return redirect('blog:social')
+        
+        
+@login_required   
+def social(request):
+    
+    all_user = User.objects.filter(is_superuser=False).exclude(pk=request.user.id)
+    my_friends = get_obj_or_none(FriendsGroup, owner=request.user).membership.all() 
+    my_requests = get_obj_or_none(FriendCandidates, owner=request.user).membership.all()
+    requests_from_others = [candidate for candidate in all_user for u in get_obj_or_none(FriendCandidates, owner=candidate).membership.all() if u == request.user]
     not_friends = [user for user in all_user if user not in my_requests and user not in my_friends]
+    
     (pub_topics, user_topics, friends_topics) = get_topics_data(user=request.user, friends_list=my_friends)
 
     return render(request, 'blog/social.html', {
@@ -86,30 +116,18 @@ def social(request, user_id=None):
 
 
 
-
-
 def index(request):
 
     slidecards_entry = []
     (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
     
-    description = get_obj_or_none(ServiceContent, name='description')
-    
-    pub_entries = get_entry_from_topics(pub_topics)
-    friends_entries = get_entry_from_topics(friends_topics)
+    description = get_obj_or_none(ServiceContent, create=False,name='description')
+    pub_entries = get_entry_from_topics(pub_topics)[:10]
+    friends_entries = get_entry_from_topics(friends_topics)[:10]
+    user_entries = get_entry_from_topics(user_topics)[:10]
 
-    if len(pub_entries) == 0:
-        pub_topics = []
-    else:
-        pub_entries = pub_entries[:10]
-        
-    if len(friends_entries) > 0:
-        friends_entries = friends_entries[:10]
- 
-    if len(friends_entries) >0 or len(pub_entries) >0:
-            slidecards_entry = (friends_entries + pub_entries)[:10]
-    
-    
+    slidecards_entry = (friends_entries + pub_entries + user_entries)[:10]
+
     
     return render(request, 'blog/index.html', {
         'description':description,
@@ -123,7 +141,7 @@ def index(request):
 
 def show_topic_list(request):
     
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
 
     return render(request, 'blog/show_topic_list.html', {
         'user_topics':user_topics,
@@ -140,7 +158,7 @@ def edit_topic(request, topic_id = None):
     
     form = None
     topic = None
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
     
     if request.method != 'POST':
         if topic_id != None:
@@ -174,7 +192,7 @@ def edit_entry(request, entry_id):
     entry = get_object_or_404(Entry, pk=entry_id)
     topic = entry.topic
     
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
 
     if topic.user != request.user and topic.permision != topic.Permissions.FOR_ALL and topic.permision != topic.Permissions.GROUP and not topic in friends_topics:
         return Http404("It is forbidden")
@@ -206,7 +224,7 @@ def edit_entry(request, entry_id):
 def new_entry(request, topic_id):
 
     topic = get_object_or_404(Topic, pk=topic_id, user=request.user)
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
 
     if request.method == 'POST':
         form = EntryForm(data=request.POST)
@@ -261,7 +279,7 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
     num_list = []
     topic = get_object_or_404(Topic, pk=topic_id)
 
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
     entries_num = topic.entries.count()
     
     if entries_num / per_page >= 2:

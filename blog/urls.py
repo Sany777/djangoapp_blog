@@ -19,11 +19,12 @@ urlpatterns = [
     path('entry/<int:topic_id>/new', views.new_entry, name='new_entry'),
     path('index/', views.index, name='index'),
     path('set_rate/<int:publication_id>', views.set_rate, name='set_rate'),
-    
-    path('social/<int:user_id>', views.social, name='social_control'),
- 
-    
+    path('social/<int:user_id>/remove_request', views.remove_request, name='remove_request'),
+    path('social/<int:user_id>/add_friend', views.add_friend, name='add_friend'),
+    path('social/<int:user_id>/add_request', views.add_request, name='add_request'),
+    path('social/<int:user_id>/remove_friend', views.remove_friend, name='remove_friend'),
     path('social', views.social, name='social'),
+    
     path('', views.index, name='index'),
 
 ]

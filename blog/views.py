@@ -1,61 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden
+
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 
 from .models import *
 from .forms import *
-
-
-def get_friends(request):
-
-    friends = []
-    if request.user.is_authenticated:    
-        
-        try:
-            user_group = Group.objects.get(owner=request.user)    
-            friends = [user for user in user_group.membership.all()]
-        except Group.DoesNotExist:
-            Group.objects.create(owner=request.user)
-
-    return friends
-
-
-def get_user_data(request):
-    
-    friends = []
-    not_friends = []
-    
-    if request.user.is_authenticated:
-        users = User.objects.exclude(pk=request.user.id).filter(is_superuser=False)
-        friends = get_friends(request)
-        not_friends = [user for user in users if user not in friends]
-        
-    return (friends, not_friends)
-    
-    
-def get_topics_data(request):
-    
-    user_topics = []
-    friends_topics = []
-    
-    pub_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
-            
-    if request.user.is_authenticated:
-        pub_topics = [topic for topic in pub_topics if topic.user != request.user]
-        user_topics = request.user.topics.order_by('-pk')
-        friends = get_friends(request)
-        if friends:
-            friends_topics = [topic for friend in friends for topic in friend.topics.order_by('-pk') if topic.permision != Topic.Permissions.PRIVATE]
-            pub_topics = [topic for topic in pub_topics if topic not in friends_topics]
-
-    return (pub_topics, user_topics, friends_topics)
-
-
-def get_entry_from_topics(topics):
-    return [entry for topic in topics for entry in topic.entries.order_by('-pk')]
-
+from .tools import *
 
 def set_rate(request, publication_id):
     
@@ -87,59 +39,62 @@ def set_rate(request, publication_id):
     return JsonResponse({'error': ''})       
         
         
-@login_required
-def add_friend(request, user_id):
-    user_to_add = get_object_or_404(User, pk=user_id)
-    
-    friends = get_friends(request)
-    if user_to_add not in friends and user_to_add.id != request.user.id:
-        group = get_object_or_404(Group, owner=request.user)
-        group.membership.add(user_to_add)
-
-
-    return redirect('blog:social' )
-
-
-@login_required
-def remove_friend(request, user_id):
-
-    user_to_remove = get_object_or_404(User, pk=user_id)
-    
-    friends = get_friends(request)
-    if user_to_remove in friends:
-        group = get_object_or_404(Group, owner=request.user)
-        group.membership.remove(user_to_remove)
-
-    return redirect('blog:social' )
-    
-    
 
     
 @login_required   
-def social(request):
+def social(request, user_id=None):
     
-    (friends, not_friends) = get_user_data(request)   
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    friends_group = FriendsGroup.objects.get(owner=request.user)
+    my_friends = friends_group.membership.all()
     
+    candidates_group = FriendCandidates.objects.get(owner=request.user)
+    
+    all_user = User.objects.filter(is_superuser=False).exclude(pk=request.user.id)
+    requests_from_others = [candidate for candidate in all_user for u in get_obj_or_none(FriendCandidates,owner=candidate).membership.all() if u == request.user]
+    
+    my_requests = candidates_group.membership.all()
+    if  user_id != None:
+        
+        candidate = get_object_or_404(User, pk=user_id)
+        
+        if candidate in my_friends:
+            friends_group.membership.remove(candidate)
+            my_friends = friends_group.membership.all()
+        elif candidate in requests_from_others:
+            friends_group.membership.add(candidate)
+            my_friends = friends_group.membership.all()
+        else:
+            if candidate in my_requests:
+                candidates_group.membership.remove(candidate)
+            else:
+                candidates_group.membership.add(candidate)        
+            my_requests = candidates_group.membership.all()
+                   
+    
+    not_friends = [user for user in all_user if user not in my_requests and user not in my_friends]
+    (pub_topics, user_topics, friends_topics) = get_topics_data(user=request.user, friends_list=my_friends)
+
     return render(request, 'blog/social.html', {
-        'friends':friends,
+        'friends':my_friends,
         'not_friends':not_friends,
+        'my_requests':my_requests,
+        'requests_from_others':requests_from_others,
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7],
     })
 
 
+
+
+
 def index(request):
 
     slidecards_entry = []
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
     
-    try:
-        description = ServiceContent.objects.get(name='description')
-    except ServiceContent.DoesNotExist:
-        pass
-
+    description = get_obj_or_none(ServiceContent, name='description')
+    
     pub_entries = get_entry_from_topics(pub_topics)
     friends_entries = get_entry_from_topics(friends_topics)
 
@@ -153,7 +108,9 @@ def index(request):
  
     if len(friends_entries) >0 or len(pub_entries) >0:
             slidecards_entry = (friends_entries + pub_entries)[:10]
-            
+    
+    
+    
     return render(request, 'blog/index.html', {
         'description':description,
         'slidecards':slidecards_entry,
@@ -178,13 +135,13 @@ def show_topic_list(request):
     })
 
 
-
 @login_required
 def edit_topic(request, topic_id = None):
     
-    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
     form = None
     topic = None
+    (pub_topics, user_topics, friends_topics) = get_topics_data(request)
+    
     if request.method != 'POST':
         if topic_id != None:
             topic = get_object_or_404(Topic, pk=topic_id)
@@ -300,11 +257,13 @@ def remove_entry(request, entry_id):
 
 
 def show_topic(request, topic_id, topic_start = 0, per_page=5):
+    
     num_list = []
     topic = get_object_or_404(Topic, pk=topic_id)
 
     (pub_topics, user_topics, friends_topics) = get_topics_data(request)
     entries_num = topic.entries.count()
+    
     if entries_num / per_page >= 2:
         num_list = [i+1 for i in range(0, entries_num-1, per_page)]
     else:
@@ -328,13 +287,13 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
 
 def about(request):
     
-    try:
-        about = ServiceContent.objects.get(name='about')
+    about = get_obj_or_none(ServiceContent, name='about')
+    if about:
         return render(request, 'blog/about.html', {
             'about':about
-        })
-    except ServiceContent.DoesNotExist:
-        return redirect('blog:index')
+        })     
+
+    return redirect('blog:index')
             
             
     

@@ -23,15 +23,25 @@ class Banner(models.Model):
     image = models.ImageField(upload_to='blog/static/photos/')  
     description = models.CharField(max_length=32, default="")
 
+    def __str__(self):
+        return self.description
 
 
-class Group(models.Model): 
+class FriendCandidates(models.Model): 
+    membership = models.ManyToManyField(User, related_name='candidates_group')
+    owner = models.OneToOneField(User,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"requests from {self.owner.username}"
+
+
+class FriendsGroup(models.Model): 
     
-    membership  = models.ManyToManyField(User, related_name='friend_groups')
-    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='owned_groups')
+    membership  = models.ManyToManyField(User, related_name='friend_group')
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"friends {self.owner}"
+        return f"friends {self.owner.username}"
 
 
 class Topic(models.Model):

@@ -12,17 +12,18 @@ from .tools import *
 def set_rate(request, publication_id):
     
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        rating_value = int(request.POST.get('rating'))
+        
         entry = get_object_or_404(Entry, pk=publication_id)
+        rating_value = int(request.POST.get('rating'))
         
         publication_rating = None
-        
+
         if Rating.objects.filter(publication=entry, user=request.user).exists():
             publication_rating = Rating.objects.get(publication=entry, user=request.user)
             publication_rating.rating = rating_value;
         else:     
             publication_rating = Rating(publication=entry, rating=rating_value, user=request.user)
-            
+
         publication_rating.save()
         publication_ratings = Rating.objects.filter(publication=entry)  
         total_ratings = publication_ratings.count()
@@ -42,13 +43,16 @@ def set_rate(request, publication_id):
 @login_required   
 def add_friend(request, user_id):
     
-    all_user = User.objects.filter(is_superuser=False).exclude(pk=request.user.id)
-    requests_from_others = [candidate for candidate in all_user for u in get_obj_or_none(FriendCandidates, owner=candidate).membership.all() if u == request.user]
     candidate = get_object_or_404(User, pk=user_id)
+    all_user = User.objects.filter(is_superuser=False).exclude(pk=request.user.id)
+    friends_group = get_obj_or_create(FriendsGroup, owner=request.user)
+    friends = friends_group.membership.all()
+    requests_from_others = get_requests(user=request.user, all_user=all_user, friends=friends)
     
     if candidate in requests_from_others:
-        get_obj_or_none(FriendsGroup, owner=candidate).membership.add(request.user)
-        get_obj_or_none(FriendCandidates, owner=candidate).membership.remove(request.user)
+        get_obj_or_create(FriendsGroup, owner=candidate).membership.add(request.user)
+        get_obj_or_create(FriendCandidates, owner=candidate).membership.remove(request.user)
+        friends_group.membership.add(candidate)
     return redirect('blog:social')
 
 
@@ -58,7 +62,8 @@ def add_friend(request, user_id):
 def remove_friend(request, user_id):
     
     candidate = get_object_or_404(User, pk=user_id)
-    get_obj_or_none(FriendsGroup, owner=request.user).membership.remove(candidate)
+    get_obj_or_create(FriendsGroup, owner=request.user).membership.remove(candidate)
+    get_obj_or_create(FriendsGroup, owner=candidate).membership.remove(request.user)
     return redirect('blog:social')
     
     
@@ -66,7 +71,7 @@ def remove_friend(request, user_id):
 def add_request(request, user_id):
     
     candidate = get_object_or_404(User, pk=user_id)
-    my_requests = get_obj_or_none(FriendCandidates, owner=request.user)
+    my_requests = get_obj_or_create(FriendCandidates, owner=request.user)
     
     if candidate not in my_requests.membership.all():
         my_requests.membership.add(candidate)
@@ -77,7 +82,9 @@ def add_request(request, user_id):
 def remove_request(request, user_id):
     
     candidate = get_object_or_404(User, pk=user_id)
-    get_obj_or_none(FriendCandidates, owner=request.user).membership.remove(candidate)
+    get_obj_or_create(FriendCandidates, owner=request.user).membership.remove(candidate)
+    get_obj_or_create(FriendsGroup, owner=request.user).membership.remove(candidate)
+    
     return redirect('blog:social')
     
     
@@ -86,10 +93,12 @@ def remove_request(request, user_id):
 def add_request(request, user_id):
     
     candidate = get_object_or_404(User, pk=user_id)
-    friends_group = get_obj_or_none(FriendsGroup, owner=request.user) 
-    my_requests = get_obj_or_none(FriendCandidates, owner=request.user)
+    friends_group = get_obj_or_create(FriendsGroup, owner=request.user) 
+    my_requests = get_obj_or_create(FriendCandidates, owner=request.user)
+    
     if candidate not in my_requests.membership.all() and candidate not in friends_group.membership.all():
         my_requests.membership.add(candidate)
+        
     return redirect('blog:social')
         
         
@@ -97,10 +106,11 @@ def add_request(request, user_id):
 def social(request):
     
     all_user = User.objects.filter(is_superuser=False).exclude(pk=request.user.id)
-    my_friends = get_obj_or_none(FriendsGroup, owner=request.user).membership.all() 
-    my_requests = get_obj_or_none(FriendCandidates, owner=request.user).membership.all()
-    requests_from_others = [candidate for candidate in all_user for u in get_obj_or_none(FriendCandidates, owner=candidate).membership.all() if u == request.user]
-    not_friends = [user for user in all_user if user not in my_requests and user not in my_friends]
+    
+    my_friends = get_obj_or_create(FriendsGroup, owner=request.user).membership.all() 
+    my_requests = get_obj_or_create(FriendCandidates, owner=request.user).membership.all()
+    requests_from_others = get_requests(request.user, my_friends, all_user)
+    not_friends = [user for user in all_user if user not in my_requests and user not in my_friends and user not in requests_from_others]
     
     (pub_topics, user_topics, friends_topics) = get_topics_data(user=request.user, friends_list=my_friends)
 
@@ -121,7 +131,7 @@ def index(request):
     slidecards_entry = []
     (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
     
-    description = get_obj_or_none(ServiceContent, create=False,name='description')
+    description = get_obj_or_create(ServiceContent, create=False,name='description')
     pub_entries = get_entry_from_topics(pub_topics)[:10]
     friends_entries = get_entry_from_topics(friends_topics)[:10]
     user_entries = get_entry_from_topics(user_topics)[:10]
@@ -250,13 +260,14 @@ def new_entry(request, topic_id):
 def remove_topic(request, topic_id):
     
     topic = get_object_or_404(Topic, pk=topic_id)
-    if request.user.id == topic.id:
-        topic_name = topic.text
+    topic_name = topic.text
+    if request.user.id == topic.user.id:
+        topic.delete()
         return render(request, 'blog/message.html', {
-            'message_str': f'Topic "{topic_name}" removed'
+            'message_str': f"Topic '{topic_name}' removed"
         })
     return render(request, 'blog/message.html', {
-            'message_str': f'You are not allowed to modify "{topic_name}" topic'
+            'message_str': f"You are not allowed to modify '{topic_name}' topic"
         })
 
 @login_required
@@ -305,7 +316,7 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
 
 def about(request):
     
-    about = get_obj_or_none(ServiceContent, name='about')
+    about = get_obj_or_create(ServiceContent, name='about')
     if about:
         return render(request, 'blog/about.html', {
             'about':about

@@ -5,18 +5,20 @@ from .forms import *
 
 
 
-def get_obj_or_none(modelClass, create=True,**kwargs):
+def get_obj_or_create(modelClass, user_add=None, create=True, **kwargs):
 
     try:
         return modelClass.objects.get(**kwargs)
     except modelClass.DoesNotExist:
         if create:
-            return modelClass.objects.create(**kwargs)
+            model = modelClass.objects.create(**kwargs)
+            if user_add and model:
+                model.save()
+                models.membership.add(user_add)
+            return model
     except:
         pass
     return None
-
-
    
     
 def get_topics_data(user, friends_list=None):
@@ -30,7 +32,9 @@ def get_topics_data(user, friends_list=None):
         pub_topics = [topic for topic in pub_topics if topic.user != user]
         user_topics = user.topics.order_by('-pk')
         if friends_list == None:
-            friends_list = get_obj_or_none(FriendsGroup, owner=user).membership.all()
+            friends_group = get_obj_or_create(FriendsGroup, owner=user)
+            if friends_group:
+                friends_list = friends_group.membership.all()
             
         if friends_list:
             friends_topics = [topic for friend in friends_list for topic in friend.topics.order_by('-pk') if topic.permision != Topic.Permissions.PRIVATE]
@@ -42,3 +46,6 @@ def get_topics_data(user, friends_list=None):
 def get_entry_from_topics(topics):
     return [entry for topic in topics for entry in topic.entries.order_by('-pk')]
 
+def get_requests(user, friends, all_user):
+    return [candidate for candidate in all_user if candidate not in friends for u in get_obj_or_create(FriendCandidates, owner=candidate).membership.all() if u == user]
+        

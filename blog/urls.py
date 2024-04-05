@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.contrib import admin
+
 
 app_name = "blog"
 
@@ -23,4 +25,5 @@ urlpatterns = [
     path('social/remove/friend/<int:user_id>', views.remove_friend, name='remove_friend'),
     path('social', views.social, name='social'),
     path('', views.index, name='index'),
+    path('admin', admin.site.urls),
 ]

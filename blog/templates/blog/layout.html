@@ -12,6 +12,9 @@
         <div class="header-start">
             <a href="{% url 'blog:index' %}"><img src="{% static 'blog/photos/logo.png' %}"></a>
             <a href="{% url 'blog:index' %}"> Home </a>
+            {% if user.is_superuser %}
+                <a href="admin"> Admin </a>
+            {% endif %}
             {% if user.is_authenticated %}
                 <a href="{% url 'blog:social' %}"> Social</a>
             {% endif %}

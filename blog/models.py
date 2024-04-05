@@ -1,20 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy
-import re
 
 
-
-def is_phone_number(phone_num):
-    if len(phone_num) != 0:
-        pattern = r"^\+\d{1,3}\d{9}$"
-        if re.match(pattern, phone_num) is not None:
-            raise ValidationError(
-                gettext_lazy("%(phone) is not phone number"),
-                params = {'value':phone_num}
-            )
 
 
 class Banner(models.Model):

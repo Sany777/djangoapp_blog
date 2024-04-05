@@ -46,6 +46,7 @@ def get_topics_data(user, friends_list=None):
 def get_entry_from_topics(topics):
     return [entry for topic in topics for entry in topic.entries.order_by('-pk')]
 
+
 def get_requests(user, friends, all_user):
     return [candidate for candidate in all_user if candidate not in friends for u in get_obj_or_create(FriendCandidates, owner=candidate).membership.all() if u == user]
         

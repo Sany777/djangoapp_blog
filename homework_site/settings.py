@@ -33,8 +33,7 @@ DEBUG_HOST ='127.0.0.1'
 PUB_HOST = 'sany.pythonanywhere.com'
 
 
-ALLOWED_HOSTS = [DEBUG_HOST]
-ALLOWED_HOSTS.append(gethostbyname(PUB_HOST))
+ALLOWED_HOSTS = [DEBUG_HOST, PUB_HOST]
 
 
 LOGIN_URL = 'users:login'

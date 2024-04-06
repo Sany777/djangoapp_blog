@@ -32,9 +32,10 @@ DEBUG = False
 DEBUG_HOST ='127.0.0.1'
 PUB_HOST = 'sany.pythonanywhere.com'
 
-ALLOWED_HOSTS = [DEBUG_HOST]
 
-ALLOWED_HOSTS.append(gethostbyname(gethostname()))
+ALLOWED_HOSTS = [DEBUG_HOST]
+ALLOWED_HOSTS.append(gethostbyname(PUB_HOST))
+
 
 LOGIN_URL = 'users:login'
 # Application definition

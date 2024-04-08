@@ -21,7 +21,7 @@
                 <a href="{% url 'blog:show_topic_list' %}"> Topics </a>
             {% block header_content %}{% endblock header_content %}
         </div>
-        <div class="header-end">
+        <p class="header-end">
             {% if user.is_authenticated %}
                 Hello, {{user.username}}
                 <a href="{% url 'users:logout' %}"> Logout </a>
@@ -29,7 +29,7 @@
                 <a href="{% url 'users:login' %}" >Log in</a>
                 <a href="{% url 'users:register' %}">Register</a> 
             {% endif %}
-        </div> 
+        </p> 
     </div>
 
     <div class="body-wrap">
@@ -70,7 +70,6 @@
             {% block main_content %}{% endblock main_content %}
         </div>
     </div>
-    <label for="scrollToTopBtn" class="scrollToTopBtn">↑</label>
     <div class="footer-wrap">
         <a href="{% url 'blog:about' %}">About</a>
     </div>

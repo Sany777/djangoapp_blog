@@ -13,7 +13,6 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button>Submit</button>
-        <input hidden name="next" value="{% url 'blog:index' %}" />
     </form>
 
 {% endblock content %}

@@ -8,6 +8,5 @@ textarea.addEventListener('scroll', () => {
     if( !document.getElementById('edit-flag')){
         textarea.disabled = true;
     }
-
 })()
 

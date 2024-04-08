@@ -124,6 +124,11 @@ def social(request):
         'pub_aside_topics': pub_topics[:7],
     })
 
+def welcome_page(request):
+    
+    return render(request, 'blog/message.html', {
+            'message_str': f"Вітаємо нового користувача! Тепер можна користуватися ресурсами сайта в повній мірі підписуватися і заводити підписників, вести блоги!"
+        })
 
 
 def index(request):
@@ -138,7 +143,6 @@ def index(request):
 
     slidecards_entry = (friends_entries + pub_entries + user_entries)[:10]
 
-    
     return render(request, 'blog/index.html', {
         'description':description,
         'slidecards':slidecards_entry,

@@ -9,7 +9,7 @@ def register_view(request):
 		if form.is_valid():
 			new_user = form.save()
 			login(request, new_user)
-			return redirect('blog:index')
+			return redirect('blog:welcome')
 	else:
 		form = UserCreationForm()
 		

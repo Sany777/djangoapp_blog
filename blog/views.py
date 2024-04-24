@@ -127,7 +127,7 @@ def social(request):
 def welcome_page(request):
     
     return render(request, 'blog/message.html', {
-            'message_str': f"Вітаємо нового користувача! Тепер можна користуватися ресурсами сайта в повній мірі підписуватися і заводити підписників, вести блоги!"
+            'message_str': f"Вітаємо нового користувача! Тепер можна підписуватися і заводити підписників, вести блоги!"
         })
 
 
@@ -135,13 +135,11 @@ def index(request):
 
     slidecards_entry = []
     (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
-    
     description = get_obj_or_create(ServiceContent, create=False,name='description')
     pub_entries = get_entry_from_topics(pub_topics)[:10]
     friends_entries = get_entry_from_topics(friends_topics)[:10]
     user_entries = get_entry_from_topics(user_topics)[:10]
-
-    slidecards_entry = (friends_entries + pub_entries + user_entries)[:10]
+    slidecards_entry = [entry[:200] for entry in (friends_entries+pub_entries+user_entries)[:10]]
 
     return render(request, 'blog/index.html', {
         'description':description,

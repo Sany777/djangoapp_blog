@@ -139,11 +139,15 @@ def index(request):
     pub_entries = get_entry_from_topics(pub_topics)[:10]
     friends_entries = get_entry_from_topics(friends_topics)[:10]
     user_entries = get_entry_from_topics(user_topics)[:10]
-    slidecards_entry = [entry[:200] for entry in (friends_entries+pub_entries+user_entries)[:10]]
+    
+    slidecards = []
+    for entry in (friends_entries+pub_entries+user_entries)[:10]:
+        entry.text = entry.text[:100]
+        slidecards.append(entry)
 
     return render(request, 'blog/index.html', {
         'description':description,
-        'slidecards':slidecards_entry,
+        'slidecards':slidecards,
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7],

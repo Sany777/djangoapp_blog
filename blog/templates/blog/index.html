@@ -3,10 +3,10 @@
 
 
 {% block main_content %}
-
+{% if slidecards %}
+<p class="entry-last">Останні додані дописи<p>
 <div class="slider" hidden>
   <button class="prev-button slider-button" onclick='slidePrev()'><</button>
-  
   <div class="slider-card">
     {% for slidecard in slidecards %}
     <a href="{% url 'blog:edit_entry' slidecard.id %}" class="slide">
@@ -16,7 +16,7 @@
   </div>
   <button class="next-button slider-button" onclick='slideNext()'>></button>
 </div>
-
+{% endif %}
 <p class="card-container">
   {{description.text}}
 </p>

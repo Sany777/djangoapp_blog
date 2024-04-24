@@ -160,7 +160,7 @@ hr {
     display: none;
     text-align: center;
     align-self: baseline;
-    margin: 3rem;
+    margin: 0rem 3rem 3rem;
 }
 
 .slide:hover {
@@ -418,4 +418,9 @@ label[for="id_rating"] {
     display: flex;
     align-items: center;
     justify-content: space-around;
+}
+
+.entry-last {
+    color: #666;
+    text-align: center;
 }

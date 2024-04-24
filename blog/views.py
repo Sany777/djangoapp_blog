@@ -133,7 +133,6 @@ def welcome_page(request):
 
 def index(request):
 
-    slidecards_entry = []
     (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
     description = get_obj_or_create(ServiceContent, create=False,name='description')
     pub_entries = get_entry_from_topics(pub_topics)[:10]
@@ -142,7 +141,7 @@ def index(request):
     
     slidecards = []
     for entry in (friends_entries+pub_entries+user_entries)[:10]:
-        entry.text = entry.text[:100]
+        entry.text = entry.text[:200]
         slidecards.append(entry)
 
     return render(request, 'blog/index.html', {

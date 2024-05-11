@@ -4,12 +4,13 @@ from django import forms
 
 
 
+
 class TopicForm(forms.ModelForm):
 
     class Meta:
         model = Topic
-        permision = forms.ChoiceField(choices=Topic.Permissions)
-        fields = ['text', 'permision']
+        permission = forms.ChoiceField(choices=Topic.Permissions)
+        fields = ['text', 'permission']
         labels = {'text':'Topic', }
 
 
@@ -22,9 +23,11 @@ class EntryForm(forms.ModelForm):
         widgets = {'text':forms.Textarea(attrs={'cols':80,'id':'auto-resize'})}
        
        
-RATING_CHOICES = [(i, str(i)) for i in range(11)]
+
 
 class RatingForm(forms.ModelForm):
+    
+    RATING_CHOICES = [(i, str(i)) for i in range(Rating.MIN_RATING, Rating.MAX_RATING+1)]
     rating = forms.ChoiceField(
         choices=RATING_CHOICES,
     )

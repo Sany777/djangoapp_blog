@@ -26,7 +26,7 @@ def get_topics_data(user, friends_list=None):
     user_topics = []
     friends_topics = []
     
-    pub_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
+    pub_topics = Topic.objects.filter(permission=Topic.Permissions.FOR_ALL)
             
     if user.is_authenticated:
         pub_topics = [topic for topic in pub_topics if topic.user != user]
@@ -37,7 +37,7 @@ def get_topics_data(user, friends_list=None):
                 friends_list = friends_group.membership.all()
             
         if friends_list:
-            friends_topics = [topic for friend in friends_list for topic in friend.topics.order_by('-pk') if topic.permision != Topic.Permissions.PRIVATE]
+            friends_topics = [topic for friend in friends_list for topic in friend.topics.order_by('-pk') if topic.permission != Topic.Permissions.PRIVATE]
             pub_topics = [topic for topic in pub_topics if topic not in friends_topics]
 
     return (pub_topics, user_topics, friends_topics)

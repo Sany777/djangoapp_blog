@@ -10,39 +10,32 @@ from .forms import *
 from .tools import *
 
 
+
+
 def set_rate(request, publication_id):
     
-    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        
-        entry = get_object_or_404(Entry, pk=publication_id)
-        
-        if is_allowed_assessment(request.user, entry):
-            rating_value = int(request.POST.get('rating'))
-            
-            publication_rating = None
+    entry = get_object_or_404(Entry, pk=publication_id)
 
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if is_allowed_assessment(request.user, entry):
+            new_rating = int(request.POST.get('rating'))
+            publication_rating = None
             if Rating.objects.filter(publication=entry, user=request.user).exists():
                 publication_rating = Rating.objects.get(publication=entry, user=request.user)
-                publication_rating.rating = rating_value;
+                publication_rating.rating = new_rating;
             else:     
-                publication_rating = Rating(publication=entry, rating=rating_value, user=request.user)
+                publication_rating = Rating(publication=entry, rating=new_rating, user=request.user)
 
             publication_rating.save()
-            publication_ratings = Rating.objects.filter(publication=entry)  
-            total_ratings = publication_ratings.count()
-            
-            if total_ratings != 0:
-                total_score = sum([rating.rating for rating in publication_ratings])
-                rating_value = total_score / total_ratings if total_ratings > 0 else 0
-                
-            entry.avg_rating = rating_value
+
+            entry.avg_rating = get_rating(entry)
             entry.save()
-
-            return JsonResponse({'success': rating_value})
-
-    return JsonResponse({'error': ''})       
+            return JsonResponse({ 'data':entry.avg_rating })
         
-        
+    return JsonResponse({ 'data':'' }) 
+
+
+
 @login_required   
 def add_friend(request, user_id):
     
@@ -57,8 +50,6 @@ def add_friend(request, user_id):
         get_obj_or_create(FriendCandidates, owner=candidate).membership.remove(request.user)
         friends_group.membership.add(candidate)
     return redirect('blog:social')
-
-
 
 
 @login_required   
@@ -91,7 +82,6 @@ def remove_request(request, user_id):
     return redirect('blog:social')
     
     
-
 @login_required   
 def add_request(request, user_id):
     
@@ -234,7 +224,6 @@ def edit_entry(request, entry_id):
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7],
-        'edit':topic.user == request.user
     })
 
 
@@ -298,7 +287,6 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
     num_list = []
     topic = get_object_or_404(Topic, pk=topic_id)
 
-     
     (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
     
     if topic not in pub_topics and topic not in user_topics and topic not in friends_topics:
@@ -312,7 +300,7 @@ def show_topic(request, topic_id, topic_start = 0, per_page=5):
     entries = topic.entries.order_by('-date_added')[topic_start:topic_start+per_page]
     
     form = None
-    if topic.user == request.user and request.user.is_authenticated:
+    if topic.user != request.user and request.user.is_authenticated:
         form = RatingForm()
         
     return render(request, 'blog/show_topic.html', {

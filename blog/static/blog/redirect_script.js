@@ -1,9 +1,9 @@
-const delayInMilliseconds = 2500;
+const DELAY_MS = 2500;
 
-const redirectUrl = '/blog/';
+const REDIRECT_URL = '/blog/';
 
 function redirectToDashboard() {
-    window.location.href = redirectUrl;
+    window.location.href = REDIRECT_URL;
 }
 
-setTimeout(redirectToDashboard, delayInMilliseconds);
+setTimeout(redirectToDashboard, DELAY_MS);

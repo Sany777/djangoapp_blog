@@ -3,7 +3,7 @@
 
 {% block header_content %}
     {% if user.is_authenticated %}
-        <span>></span><a href="{% url 'blog:new_topic' %}">New topic</a>
+        <span>></span><a href="{% url 'blog:new_topic' %}">Створити тему</a>
     {% endif %}
 {% endblock header_content %}
 
@@ -11,7 +11,7 @@
 {% block main_content %}
     {% if user.is_authenticated %}
         {% if user_topics %}
-            <h3 class="topic-title"> My Topic </h3>
+            <h3 class="topic-title"> Мої теми </h3>
             <ul>
             {% for topic in user_topics %}
                 <li>
@@ -20,11 +20,11 @@
             {% endfor %}
             </ul>
         {% else %}
-            <a href="{% url 'blog:new_topic' %}"> Maybe it's time to create your own topic </a>
+            <a href="{% url 'blog:new_topic' %}">Створити першу власну тему</a>
         {% endif %}
     {% endif %}
     {% if pub_topics %}
-        <h3 class="topic-title">Public topics</h3>
+        <h3 class="topic-title">Публічні теми</h3>
         <ul>
         {% for topic in pub_topics %}
             <li>
@@ -33,11 +33,11 @@
         {% endfor %}
         </ul>
     {% elif not friends_topics %}
-        <h3>There are no public topics</h3>
+        <h3>Немає публічних тем</h3>
     {% endif %}
     {% if user.is_authenticated %}
         {% if friends_topics %}
-            <h3 class="topic-title">Friends topics</h3>
+            <h3 class="topic-title">Теми друзів</h3>
             <ul>
             {% for topic in friends_topics %}
                 <li>
@@ -46,7 +46,7 @@
             {% endfor %}
             </ul>
         {% else %}
-            <h3>There are no friends topics</h3>
+            <h3>Немає тем друзів</h3>
         {% endif %}
     {% endif %}   
 {% endblock main_content %}

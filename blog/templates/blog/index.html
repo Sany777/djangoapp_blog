@@ -4,7 +4,7 @@
 
 {% block main_content %}
 {% if slidecards %}
-<p class="entry-last">Останні додані дописи<p>
+<p class="message">Останні додані дописи<p>
 <div class="slider" hidden>
   <button class="prev-button slider-button" onclick='slidePrev()'><</button>
   <div class="slider-card">
@@ -17,9 +17,12 @@
   <button class="next-button slider-button" onclick='slideNext()'>></button>
 </div>
 {% endif %}
+{% if description %}
+<p class="message">Welcome!</p>
 <p class="card-container">
   {{description.text}}
 </p>
+{% endif %}
 
 
 {% endblock main_content %}

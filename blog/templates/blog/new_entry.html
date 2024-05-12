@@ -9,7 +9,7 @@
     <form action="{% url 'blog:new_entry' topic.id %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button>Submit</button>
+        <button>Зберегти</button>
     </form>
 
 {% endblock main_content %}

@@ -5,15 +5,15 @@
 
     <h2 class="title">
         {% if topic %}
-        Edit "{{topic}}"
+        Редагувати "{{topic}}"
         {% else %}
-            Create a new topic
+            Створити нову тему
         {% endif %}
     </h2>
     <form action="{% url 'blog:new_topic' %}" method="post" >
         {% csrf_token %}
         {{ form.as_p }}
-        <button>Submit</button>
+        <button>Зберегти</button>
     </form>
     
 {% endblock main_content %}

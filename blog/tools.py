@@ -3,7 +3,14 @@ from django.contrib.auth.models import User
 from .models import *
 from .forms import *
 
-
+def get_rating(entry):
+    rating_value = Entry.DEFAULT_RATING
+    publication_ratings = Rating.objects.filter(publication=entry)  
+    total_ratings = publication_ratings.count()
+    if total_ratings != 0:
+        total_score = sum([rating.rating for rating in publication_ratings])
+        rating_value = total_score / total_ratings
+    return rating_value
 
 def get_obj_or_create(modelClass, user_add=None, create=True, **kwargs):
 

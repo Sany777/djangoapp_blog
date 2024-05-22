@@ -9,37 +9,33 @@ from .models import *
 from .forms import *
 from .tools import *
 
+
+
+
 def set_rate(request, publication_id):
     
+    entry = get_object_or_404(Entry, pk=publication_id)
+
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        
-        entry = get_object_or_404(Entry, pk=publication_id)
-        rating_value = int(request.POST.get('rating'))
-        
-        publication_rating = None
+        if is_allowed_assessment(request.user, entry):
+            new_rating = int(request.POST.get('rating'))
+            publication_rating = None
+            if Rating.objects.filter(publication=entry, user=request.user).exists():
+                publication_rating = Rating.objects.get(publication=entry, user=request.user)
+                publication_rating.rating = new_rating;
+            else:     
+                publication_rating = Rating(publication=entry, rating=new_rating, user=request.user)
 
-        if Rating.objects.filter(publication=entry, user=request.user).exists():
-            publication_rating = Rating.objects.get(publication=entry, user=request.user)
-            publication_rating.rating = rating_value;
-        else:     
-            publication_rating = Rating(publication=entry, rating=rating_value, user=request.user)
+            publication_rating.save()
 
-        publication_rating.save()
-        publication_ratings = Rating.objects.filter(publication=entry)  
-        total_ratings = publication_ratings.count()
+            entry.avg_rating = get_rating(entry)
+            entry.save()
+            return JsonResponse({ 'data':entry.avg_rating })
         
-        if total_ratings != 0:
-            total_score = sum([rating.rating for rating in publication_ratings])
-            rating_value = total_score / total_ratings if total_ratings > 0 else 0
-            
-        entry.avg_rating = rating_value
-        entry.save()
+    return JsonResponse({ 'data':'' }) 
 
-        return JsonResponse({'success': rating_value})
 
-    return JsonResponse({'error': ''})       
-        
-        
+
 @login_required   
 def add_friend(request, user_id):
     
@@ -54,8 +50,6 @@ def add_friend(request, user_id):
         get_obj_or_create(FriendCandidates, owner=candidate).membership.remove(request.user)
         friends_group.membership.add(candidate)
     return redirect('blog:social')
-
-
 
 
 @login_required   
@@ -88,7 +82,6 @@ def remove_request(request, user_id):
     return redirect('blog:social')
     
     
-
 @login_required   
 def add_request(request, user_id):
     
@@ -209,7 +202,7 @@ def edit_entry(request, entry_id):
     
     (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
 
-    if topic.user != request.user and topic.permision != topic.Permissions.FOR_ALL and topic.permision != topic.Permissions.GROUP and not topic in friends_topics:
+    if topic.user != request.user and topic.permission != topic.Permissions.FOR_ALL and topic.permission != topic.Permissions.GROUP and not topic in friends_topics:
         return Http404("It is forbidden")
     
     if request.method == 'POST':
@@ -231,7 +224,6 @@ def edit_entry(request, entry_id):
         'user_aside_topics':user_topics[:7],
         'friends_aside_topics':friends_topics[:7],
         'pub_aside_topics': pub_topics[:7],
-        'edit':topic.user == request.user
     })
 
 
@@ -286,18 +278,21 @@ def remove_entry(request, entry_id):
             'message_str': f'Entry "{text}..." removed'
         })
         
-    return Http404("It is forbidden")
+    raise Http404("It is forbidden")
 
 
 
 def show_topic(request, topic_id, topic_start = 0, per_page=5):
-    
+
     num_list = []
     topic = get_object_or_404(Topic, pk=topic_id)
 
     (pub_topics, user_topics, friends_topics) = get_topics_data(request.user)
-    entries_num = topic.entries.count()
     
+    if topic not in pub_topics and topic not in user_topics and topic not in friends_topics:
+        raise  Http404("You do not have access to this topic")
+        
+    entries_num = topic.entries.count()
     if entries_num / per_page >= 2:
         num_list = [i+1 for i in range(0, entries_num-1, per_page)]
     else:

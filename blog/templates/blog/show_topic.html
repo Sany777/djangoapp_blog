@@ -21,9 +21,9 @@
            {{ entry.date_added }}
            <a href="{% url 'blog:edit_entry' entry.id %}">
             {% if topic.user == user %}
-                Edit
+                Редагувати
             {% else %}
-                Show
+                Показати
             {% endif%}
             </a>
 
@@ -54,7 +54,7 @@
     </div>
     {% empty %}
         {% if topic.user == user %}
-            <a href="{% url 'blog:new_entry' topic.id %}"> Create a new entry</a>
+            <a href="{% url 'blog:new_entry' topic.id %}">Створити новий допис</a>
         {% endif %}
     {% endfor %}
     <div class="page-selector">

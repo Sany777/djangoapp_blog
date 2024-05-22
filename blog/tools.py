@@ -3,7 +3,14 @@ from django.contrib.auth.models import User
 from .models import *
 from .forms import *
 
-
+def get_rating(entry):
+    rating_value = Entry.DEFAULT_RATING
+    publication_ratings = Rating.objects.filter(publication=entry)  
+    total_ratings = publication_ratings.count()
+    if total_ratings != 0:
+        total_score = sum([rating.rating for rating in publication_ratings])
+        rating_value = total_score / total_ratings
+    return rating_value
 
 def get_obj_or_create(modelClass, user_add=None, create=True, **kwargs):
 
@@ -26,7 +33,7 @@ def get_topics_data(user, friends_list=None):
     user_topics = []
     friends_topics = []
     
-    pub_topics = Topic.objects.filter(permision=Topic.Permissions.FOR_ALL)
+    pub_topics = Topic.objects.filter(permission=Topic.Permissions.FOR_ALL)
             
     if user.is_authenticated:
         pub_topics = [topic for topic in pub_topics if topic.user != user]
@@ -37,7 +44,7 @@ def get_topics_data(user, friends_list=None):
                 friends_list = friends_group.membership.all()
             
         if friends_list:
-            friends_topics = [topic for friend in friends_list for topic in friend.topics.order_by('-pk') if topic.permision != Topic.Permissions.PRIVATE]
+            friends_topics = [topic for friend in friends_list for topic in friend.topics.order_by('-pk') if topic.permission != Topic.Permissions.PRIVATE]
             pub_topics = [topic for topic in pub_topics if topic not in friends_topics]
 
     return (pub_topics, user_topics, friends_topics)

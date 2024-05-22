@@ -8,7 +8,6 @@
 })();
 
 
-
 function slidePrev()
 {
     let activeSlide = document.querySelector('.slide.active');
@@ -31,8 +30,8 @@ function slideNext()
 }
 
 
-
-function moveBox(event){
+function moveBox(event)
+{
     const keyCode = event.keyCode;
     if (keyCode === 37) {
         slidePrev();
@@ -55,8 +54,8 @@ document.querySelectorAll('.ratingForm').forEach(function(form) {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
-                if (response.success) {
-                    document.querySelector('.entry_'+entry_id).innerText = "Оцінка: " + response.success;  
+                if (response?.data >= 0) {
+                    document.querySelector('.entry_'+entry_id).innerText = "Оцінка: " + response.data;  
                 }
             }
         };

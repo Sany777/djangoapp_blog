@@ -3,8 +3,8 @@
 
 {% block header_content %}
     
-    {% if edit %}
-        <span>></span><a class="danger" href="{% url 'blog:remove_entry' entry.id %}">Remove entry</a>
+    {% if entry.topic.user == user %}
+        <span>></span><a class="danger" href="{% url 'blog:remove_entry' entry.id %}">Видалити</a>
     {% endif %}
 {% endblock header_content %}
 
@@ -15,9 +15,9 @@
     <form action="{% url 'blog:edit_entry' entry.id %}" method="post" >
         {% csrf_token %}
         {{ form.as_p }}
-        {% if edit %}
+        {% if entry.topic.user == user %}
             <input id="edit-flag" hidden>
-            <button>Submit</button>
+            <button>Зберегти</button>
         {% endif %}
     </form>
     <script rel="script" src="{% static 'blog/edit_script.js' %}"></script>

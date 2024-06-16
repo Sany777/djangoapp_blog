@@ -4,8 +4,9 @@
 <head>
     <link rel="stylesheet" href="{% static 'blog/css/style.css' %}" >
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     <div class="header-wrap">
@@ -31,8 +32,8 @@
             {% endif %}
         </p> 
     </div>
-
     <div class="body-wrap">
+        
         <div class="aside-container">
             {% block aside_content %}{% endblock aside_content %}
 
@@ -61,6 +62,7 @@
             {% endif %}
  
             <div class="banner-container">
+                
                 <div class="baner-content">
                     <a href="{% url 'blog:index' %}"><img src="{% static 'blog/photos/f401.png' %}"></a>
                 </div>

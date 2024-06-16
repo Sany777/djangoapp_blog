@@ -1,0 +1,17 @@
+<!-- chat/templates/chat/chat_form.html -->
+  {% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'chat/css/style.css' %}">
+    <title>Create Chat</title>
+</head>
+<body>
+    <h1>Create Chat</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create</button>
+    </form>
+</body>
+</html>

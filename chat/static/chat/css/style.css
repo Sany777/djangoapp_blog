@@ -1,0 +1,26 @@
+/* chat/static/css/chat.css */
+
+.message {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.message .author {
+    font-weight: bold;
+    color: #336699;
+}
+
+.message .timestamp {
+    font-size: 0.8em;
+    color: #999;
+}
+
+.message .reply-button {
+    background-color: #336699;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}

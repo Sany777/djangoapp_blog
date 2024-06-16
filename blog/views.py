@@ -92,7 +92,7 @@ def social(request):
 
 def welcome_page(request):
     return render(request, 'blog/message.html', {
-        'message_str': "Вітаємо нового користувача! Тепер можна підписуватися і заводити підписників, вести блоги!"
+        'message_str': "Congratulate!"
     })
 
 

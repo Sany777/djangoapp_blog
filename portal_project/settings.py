@@ -40,6 +40,7 @@ LOGIN_URL = 'users:login'
 INSTALLED_APPS = [
     'blog',
     'users',
+    'chat',
     # 'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',

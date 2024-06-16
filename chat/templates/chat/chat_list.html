@@ -1,0 +1,18 @@
+<!-- chat/templates/chat/chat_list.html -->
+  {% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'chat/css/style.css' %}">
+    <title>Chat List</title>
+</head>
+<body>
+    <h1>Chat List</h1>
+    <ul>
+    {% for chat in object_list %}
+        <li><a href="{% url 'chat:message_list' chat.pk %}">{{ chat.title }}</a></li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'chat:chat_create' %}">Create New Chat</a>
+</body>
+</html>

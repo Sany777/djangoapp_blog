@@ -1,0 +1,25 @@
+<!-- chat/templates/chat/message_list.html -->
+  {% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'chat/css/style.css' %}">
+    <title>Message List</title>
+</head>
+<body>
+    <h1>Message List</h1>
+    <ul>
+{% for message in message_list %}
+    <div class="message">
+        <p>{{ message.author.username }} - {{ message.timestamp }}</p>
+        <p>{{ message.content }}</p>
+        {% if message.reply_to %}
+            <p>Відповідь на: {{ message.reply_to.author.username }} - {{ message.reply_to.timestamp }}</p>
+        {% endif %}
+        <a href="{% url 'chat:message_create' pk=message.chat.pk %}?reply_to={{ message.id }}">Відповісти</a>
+    </div>
+{% endfor %}
+    </ul>
+    <a href="{% url 'chat:message_create' chat_pk %}">Create New Message</a>
+</body>
+</html>

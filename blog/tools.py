@@ -2,55 +2,56 @@ from django.contrib.auth.models import User
 
 from .models import *
 from .forms import *
-
-def get_rating(entry):
+def get_rating(entry: Entry) -> float:
     rating_value = Entry.DEFAULT_RATING
-    publication_ratings = Rating.objects.filter(publication=entry)  
+    publication_ratings = Rating.objects.filter(publication=entry)
     total_ratings = publication_ratings.count()
+    
     if total_ratings != 0:
-        total_score = sum([rating.rating for rating in publication_ratings])
+        total_score = publication_ratings.aggregate(models.Sum('rating'))['rating__sum']
         rating_value = total_score / total_ratings
+    
     return rating_value
 
-def get_obj_or_create(modelClass, user_add=None, create=True, **kwargs):
-
+def get_obj_or_create(modelClass, user_to_add: User = None, create: bool = True, **kwargs):
     try:
         return modelClass.objects.get(**kwargs)
     except modelClass.DoesNotExist:
         if create:
             model = modelClass.objects.create(**kwargs)
-            if user_add and model:
+            if user_to_add:
+                model.membership.add(user_to_add)
                 model.save()
-                models.membership.add(user_add)
             return model
-    except:
+    except modelClass.MultipleObjectsReturned:
         pass
+    
     return None
    
     
-def get_topics_data(user, friends_list=None):
-    
+def get_topics_data(user: User, friends_list: list[User] = None):
     user_topics = []
     friends_topics = []
     
     pub_topics = Topic.objects.filter(permission=Topic.Permissions.FOR_ALL)
-            
+    
     if user.is_authenticated:
-        pub_topics = [topic for topic in pub_topics if topic.user != user]
+        pub_topics = pub_topics.exclude(user=user)
         user_topics = user.topics.order_by('-pk')
-        if friends_list == None:
+        
+        if friends_list is None:
             friends_group = get_obj_or_create(FriendsGroup, owner=user)
             if friends_group:
                 friends_list = friends_group.membership.all()
-            
+        
         if friends_list:
-            friends_topics = [topic for friend in friends_list for topic in friend.topics.order_by('-pk') if topic.permission != Topic.Permissions.PRIVATE]
-            pub_topics = [topic for topic in pub_topics if topic not in friends_topics]
+            friends_topics = Topic.objects.filter(user__in=friends_list).exclude(permission=Topic.Permissions.PRIVATE).order_by('-pk')
+            pub_topics = pub_topics.exclude(id__in=[topic.id for topic in friends_topics])
 
-    return (pub_topics, user_topics, friends_topics)
+    return pub_topics, user_topics, friends_topics
 
 
-def get_entry_from_topics(topics):
+def get_entry_from_topics(topics: list[Topic]):
     return [entry for topic in topics for entry in topic.entries.order_by('-pk')]
 
 

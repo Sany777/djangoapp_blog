@@ -1,8 +1,11 @@
 {% extends 'chat/base.html' %}
 
+{% block title %}
+  {{chat.title}}
+{% endblock title %}
 
 {% block main_content %}
-  <h1>Повідомлення в чаті: {{ chat.title }}</h1>
+  <h1>{{ chat.title }}</h1>
 
     {% for message in object_list %}
       <div class="message">

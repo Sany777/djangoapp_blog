@@ -8,7 +8,7 @@
     {% block head %}{% endblock head %}
     <title>{% block title %}{% endblock title%}</title>
 </head>
-<body>
+<body class="flex-container">
     <div class="header-wrap">
         <div class="header-start">
             <a href="{% url 'blog:index' %}"><img src="{% static 'portal/photos/logo.png' %}"></a>
@@ -32,6 +32,7 @@
             {% endif %}
         </p> 
     </div>
+
     <div class="body-wrap">
         {% block aside_content %}{% endblock aside_content %}
         <div class="main-container">

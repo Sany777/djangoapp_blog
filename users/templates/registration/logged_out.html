@@ -5,10 +5,10 @@
     <a href="{% url 'users:register' %}">Register</a> 
 {% endblock header_content %}
 
-{% block content %}
+{% block main_content %}
 
     <p class="registration-content">
         You have been loged out. Bye!
     </p>
 <script rel="script" src="{% static 'blog/redirect_script.js' %}"></script>
-{% endblock content %}
+{% endblock main_content %}

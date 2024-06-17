@@ -2,7 +2,7 @@
       border: 1px solid #ccc;
       margin: 10px 0;
       border-radius: 5px;
-      width: 90%;
+      width: 95%;
   }
 
   .message-author {
@@ -30,31 +30,11 @@
       text-align: start;
   }
 
-
-
-  body {
-      font-family: 'Arial', sans-serif;
-  }
-
-  header {
-      background-color: #f8f8f8;
-      padding: 20px;
-      text-align: center;
-  }
-
   header h1 a {
       text-decoration: none;
-      color: #333;
+      color: #939393;
   }
 
-  main {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
 
   .message-response {
       text-align: end;

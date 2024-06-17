@@ -1,9 +1,8 @@
-body {
+/* body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
     background-color: #ddd;
-
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -39,13 +38,13 @@ button:active {
 }
 
 a {
-    color: black;
-    text-decoration: none;
+    color: #666;
     margin: 0 2rem 0.5rem;
+    text-decoration: none;
 }
 
 a:visited {
-    color: black;
+    color: #666;
 }
 
 .header-wrap span {
@@ -58,13 +57,9 @@ a:visited {
     margin-right: auto;
 }
 
-a {
-    display: block;
-    transition: transform 0.2s ease-in-out;
-}
 
 a:hover {
-    transform: scale(1.1);
+    text-decoration: underline;
 }
 
 .header-start {
@@ -76,9 +71,7 @@ a:hover {
 .body-wrap {
     display: flex;
     flex-direction: row;
-    min-width: 1100px;
     margin: 0;
-    flex: 1;
 }
 
 
@@ -90,7 +83,6 @@ a:hover {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    min-width: 1100px;
 }
 
 .footer-wrap a {
@@ -109,9 +101,6 @@ a:hover {
     color: #666;
 }
 
-.aside-container a:hover {
-    color: black;
-}
 
 hr {
     width: 80%;
@@ -125,9 +114,9 @@ hr {
     flex-direction: column;
     justify-content: flex-start;
     flex: 1 1 80%;
-    margin: 0 3rem 4rem 2rem;
+    margin: 2rem;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 3px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
     padding: 3rem 2rem;
 }
@@ -296,9 +285,6 @@ form select {
     font-size: 1.3rem;
 }
 
-.page_num {
-    color: black;
-}
 
 
 .page-selector {
@@ -309,14 +295,8 @@ form select {
 
 }
 
-.page-selector a {
-    transform: none;
-    margin: 0.5rem;
-}
 
-.page-selector a:hover {
-    text-decoration: underline;
-}
+
 
 .baner-content {
     margin: 2rem 0;
@@ -328,14 +308,11 @@ form select {
     opacity: 0.8;
 }
 
-.baner-content a {
-    transform: none;
-}
+
 
 .baner-content a img {
     min-width: 110px;
     max-width: 100%;
-    transform: none;
     height: auto;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
 }
@@ -423,5 +400,4 @@ label[for="id_rating"] {
 .message {
     color: #666;
     text-align: center;
-    margin-bottom: -1rem;
-}
+} */

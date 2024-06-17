@@ -2,12 +2,8 @@
 {% load static %}
 
 
-{% block header_content %}
-    <a href="{% url 'users:login' %}">Login</a> 
-{% endblock header_content %}
 
-
-{% block content %}
+{% block main_content %}
 
     <form action="{% url 'users:register' %}" method="post" class="registration-content">
         {% csrf_token %}
@@ -15,5 +11,5 @@
         <button>Submit</button>
     </form>
 
-{% endblock content %}
+{% endblock main_content %}
 

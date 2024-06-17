@@ -1,28 +1,6 @@
+{% extends 'portal/layout.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
+{% block head %}
     <link rel="stylesheet" href="{% static 'registration/style.css' %}" >
-    <link rel="stylesheet" href="{% static 'blog/style.css' %}" >
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration</title>
-</head>
-<body>
-    <div class="header-wrap">
-        <div class="header-start">
-            <a href="{% url 'blog:index' %}"><img src="{% static 'blog/photos/logo.png' %}"></a>
-            <a href="{% url 'blog:index' %}"> Home </a>
-        </div>
-
-        <div class="header-end">
-            {% block header_content %}{% endblock header_content %}
-        </div>
-    </div>
-
-    <div class="registration-container">
-        {% block content %}{% endblock content %}
-    </div>
-
-</body>
-</html>
+{% endblock head %}

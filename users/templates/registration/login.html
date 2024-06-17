@@ -1,11 +1,8 @@
 {% extends 'registration/base.html' %}
 {% load static %}
 
-{% block header_content %}
-    <a href="{% url 'users:register' %}">Register</a> 
-{% endblock header_content %}
 
-{% block content %}
+{% block main_content %}
 
     {% if form.errors %}
     <p class="registration-content atention">
@@ -19,5 +16,5 @@
         <button>Submit</button>
         <input hidden name="next" value="{% url 'blog:index' %}" />
     </form>
-{% endblock content %}
+{% endblock main_content %}
 

@@ -2,11 +2,11 @@
 
 {% block title %}Topic list{% endblock %}
 
-{% block header_content %}
-    {% if user.is_authenticated %}
-        <span>></span><a href="{% url 'blog:new_topic' %}">Створити тему</a>
-    {% endif %}
-{% endblock header_content %}
+{% if user.is_authenticated %}
+    {% block header_content %}
+        <a href="{% url 'blog:new_topic' %}">Створити тему</a>
+    {% endblock header_content %}
+{% endif %}
 
 
 {% block main_content %}

@@ -3,7 +3,6 @@
 
 {% block title %}Edit{% endblock %}
 {% block header_content %}
-    
     {% if entry.topic.user == user %}
         <span>></span><a class="danger" href="{% url 'blog:remove_entry' entry.id %}">Видалити</a>
     {% endif %}

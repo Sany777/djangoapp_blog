@@ -191,7 +191,7 @@
             const clock_link = document.getElementById(DateTimeShortcuts.clockLinkName + num);
 
             // Recalculate the clockbox position
-            // is it left-to-right or right-to-left base ?
+            // is it left-to-right or right-to-left layout ?
             if (window.getComputedStyle(document.body).direction !== 'rtl') {
                 clock_box.style.left = findPosX(clock_link) + 17 + 'px';
             }
@@ -362,7 +362,7 @@
             }
 
             // Recalculate the clockbox position
-            // is it left-to-right or right-to-left base ?
+            // is it left-to-right or right-to-left layout ?
             if (window.getComputedStyle(document.body).direction !== 'rtl') {
                 cal_box.style.left = findPosX(cal_link) + 17 + 'px';
             }

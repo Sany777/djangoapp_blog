@@ -1,17 +1,20 @@
-<!-- chat/templates/chat/message_form.html -->
-  {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="{% static 'chat/css/style.css' %}">
-    <title>Create Message</title>
-</head>
-<body>
-    <h1>Create Message</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create</button>
-    </form>
-</body>
-</html>
+{% extends 'chat/base.html' %}
+
+{% block title %}
+    Create Message
+{% endblock title %}
+
+
+{% block main_content %}
+  <h1>Додати повідомлення</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div>
+      {{ form.content.errors }}
+      {{ form.content }}
+    </div>
+    {{ form.reply_to }}
+    <button type="submit">Відправити</button>
+  </form>
+{% endblock main_content %}

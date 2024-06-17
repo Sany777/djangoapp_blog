@@ -1,4 +1,3 @@
-# chat/urls.py
 from django.urls import path
 from . import views
 
@@ -9,5 +8,4 @@ urlpatterns = [
     path('create/', views.ChatCreateView.as_view(), name='chat_create'),
     path('<int:pk>/messages/', views.MessageListView.as_view(), name='message_list'),
     path('<int:pk>/messages/create/', views.MessageCreateView.as_view(), name='message_create'),
-    
 ]

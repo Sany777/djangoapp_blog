@@ -18,9 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('chats/', include('chat.urls')), 
+    path('chat/', include('chat.urls')), 
     path('users/', include('users.urls')),
     path('admin/', admin.site.urls),
-    path('', include('blog.urls')),
     path('blog/', include('blog.urls')),
 ]

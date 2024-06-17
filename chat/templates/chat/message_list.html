@@ -1,25 +1,20 @@
-<!-- chat/templates/chat/message_list.html -->
-  {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="{% static 'chat/css/style.css' %}">
-    <title>Message List</title>
-</head>
-<body>
-    <h1>Message List</h1>
-    <ul>
-{% for message in message_list %}
-    <div class="message">
-        <p>{{ message.author.username }} - {{ message.timestamp }}</p>
-        <p>{{ message.content }}</p>
+{% extends 'chat/base.html' %}
+
+
+{% block main_content %}
+  <h1>Повідомлення в чаті: {{ chat.title }}</h1>
+
+    {% for message in object_list %}
+      <div class="message">
+        <span class="message-author"><strong>{{ message.author.username }}:</strong></span>
+        <span class="message-timestamp"><small>{{ message.timestamp }}</small></span>
         {% if message.reply_to %}
-            <p>Відповідь на: {{ message.reply_to.author.username }} - {{ message.reply_to.timestamp }}</p>
+          <p class="message-reply"><em>Відповідь на: {{ message.reply_to.content }}</em></p>
         {% endif %}
-        <a href="{% url 'chat:message_create' pk=message.chat.pk %}?reply_to={{ message.id }}">Відповісти</a>
-    </div>
-{% endfor %}
-    </ul>
-    <a href="{% url 'chat:message_create' chat_pk %}">Create New Message</a>
-</body>
-</html>
+        <p class="message-content">{{ message.content }}</p>
+        <a class="message-response" href="{% url 'chat:message_create' chat.pk %}?reply_to={{ message.id }}">Відповісти</a>
+      </div>
+    {% endfor %}
+
+  <a href="{% url 'chat:message_create' chat.pk %}">Додати повідомлення</a>
+{% endblock main_content %}

@@ -6,10 +6,10 @@ from .models import Chat, Message
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
-        fields = '__all__'
+        fields = ['title']
 
 class MessageSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()  # Для відображення імені користувача
+    author = serializers.StringRelatedField()  
 
     class Meta:
         model = Message

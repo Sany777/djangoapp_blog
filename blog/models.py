@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Banner(models.Model):
     link = models.URLField()
-    image = models.ImageField(upload_to='photos/')  # Відносний шлях
+    image = models.ImageField(upload_to='photos/')  
     description = models.CharField(max_length=32, default="")
 
     def __str__(self):

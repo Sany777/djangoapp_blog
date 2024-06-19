@@ -12,7 +12,7 @@
         <span class="message-author"><strong>{{ message.author.username }}:</strong></span>
         <span class="message-timestamp"><small>{{ message.timestamp }}</small></span>
         {% if message.reply_to %}
-          <p class="message-reply"><em>Відповідь на: {{ message.reply_to.content }}</em></p>
+          <p class="message-reply"><em>Відповідь на повідомлення {{message.reply_to.author}}, {{message.reply_to.timestamp}}:<br>{{ message.reply_to.content }}</em></p>
         {% endif %}
         <p class="message-content">{{ message.content }}</p>
         <a class="message-response" href="{% url 'chat:message_create' chat.pk %}?reply_to={{ message.id }}">Відповісти</a>

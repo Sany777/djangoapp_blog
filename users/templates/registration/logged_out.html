@@ -1,14 +1,11 @@
 {% extends 'registration/base.html' %}
 {% load static %}
 
-{% block header_content %}
-    <a href="{% url 'users:register' %}">Register</a> 
-{% endblock header_content %}
 
 {% block main_content %}
 
     <p class="registration-content">
         You have been loged out. Bye!
     </p>
-<script rel="script" src="{% static 'portal/redirect_script.js' %}"></script>
+<script rel="script" src="{% static 'blog/js/redirect_script.js' %}"></script>
 {% endblock main_content %}

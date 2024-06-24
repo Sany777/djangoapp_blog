@@ -1,6 +1,10 @@
 {% extends 'portal/layout.html' %}
 {% load static %}
 
+{% block head %}
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}" >
+{% endblock head %}
+
 {% block aside_content %}
     <div class="aside-container">
         {% if pub_aside_topics %}
@@ -27,7 +31,7 @@
         {% endif %}
         <div class="banner-container">
             <div class="baner-content">
-                <!-- <a href="{% url 'blog:index' %}"><img src="{% static 'portal/photos/f401.png' %}"></a> -->
+                <a href="{% url 'blog:index' %}"><img src="{% static 'portal/photos/f401.png' %}"></a>
             </div>
         </div>
     </div>

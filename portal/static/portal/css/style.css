@@ -256,17 +256,16 @@ ul {
     width: 50%;
 }
 
-.message-container {
-    text-align: center;
-    margin-top: 4rem;
-}
+
 
 .danger {
     color: darkred !important;
 }
 
-.message-container {
+p .message-container {
+    margin-top: 4rem;
     display: flex;
+    text-align: justify;
     align-items: center;
     justify-content: center;
 }

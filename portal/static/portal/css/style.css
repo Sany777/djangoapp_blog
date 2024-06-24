@@ -262,7 +262,7 @@ ul {
     color: darkred !important;
 }
 
-p .message-container {
+p.message-container {
     margin-top: 4rem;
     display: flex;
     text-align: justify;

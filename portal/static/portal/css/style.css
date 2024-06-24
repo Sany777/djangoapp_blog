@@ -401,3 +401,9 @@ label[for="id_rating"] {
     display: flex;
     flex-direction: column;
 }
+
+.aside-container a {
+    min-width: 100%;
+    margin-left: 2rem;
+    display: block;
+}

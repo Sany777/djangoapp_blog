@@ -22,7 +22,6 @@
 .registration-content input {
     padding: 0.5rem;
     width: 20rem;
-    /* border: gray; */
 }
 
 .registration-content input:enabled {

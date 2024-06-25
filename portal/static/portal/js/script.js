@@ -54,8 +54,8 @@ document.querySelectorAll('.ratingForm').forEach(function(form) {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
-                if (response?.data >= 0) {
-                    document.querySelector('.entry_'+entry_id).innerText = "Оцінка: " + response.data;  
+                if (response?.r >= 0) {
+                    document.querySelector('.entry_'+entry_id).innerText = "Оцінка: " + response.r;  
                 }
             }
         };

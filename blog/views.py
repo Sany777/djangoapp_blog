@@ -12,7 +12,7 @@ def set_rate(request, publication_id):
     entry = get_object_or_404(Entry, pk=publication_id)
 
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        if is_allowed_assessment(request.user, entry):
+        if entry.topic.user is not request.user:
             new_rating = int(request.POST.get('rating'))
             publication_rating, created = Rating.objects.get_or_create(publication=entry, user=request.user)
             publication_rating.rating = new_rating
@@ -20,9 +20,9 @@ def set_rate(request, publication_id):
 
             entry.avg_rating = get_rating(entry)
             entry.save()
-            return JsonResponse({'data': entry.avg_rating})
+            return JsonResponse({'r': entry.avg_rating})
 
-    return JsonResponse({'data': ''})
+    return JsonResponse({'r': ''})
 
 
 @login_required

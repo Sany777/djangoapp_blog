@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 
 from .models import *
 from .forms import *
+
+
 def get_rating(entry: Entry) -> float:
     rating_value = Entry.DEFAULT_RATING
     publication_ratings = Rating.objects.filter(publication=entry)

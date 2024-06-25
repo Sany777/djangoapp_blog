@@ -1,4 +1,5 @@
 {% extends 'chat/base.html' %}
+{% load static %}
 
 {% block title %}
     Create Message
@@ -15,7 +16,7 @@
       {{ form.content }}
     </div>
     {{ form.reply_to }}
-    <button type="submit">Відправити</button>
+    <button type="submit">Створити</button>
   </form>
   <script rel="script" src="{% static 'portal/js/edit_script.js' %}"></script>
 {% endblock main_content %}

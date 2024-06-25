@@ -11,5 +11,5 @@
         <li><a href="{% url 'chat:message_list' pk=chat.pk %}">{{ chat.title }}</a></li>
     {% endfor %}
     </ul>
-    <a href="{% url 'chat:chat_create' %}">Create New Chat</a>
+    <a href="{% url 'chat:chat_create' %}">Створити новий чат</a>
 {% endblock main_content %}

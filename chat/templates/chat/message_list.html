@@ -1,4 +1,5 @@
 {% extends 'chat/base.html' %}
+{% load static %}
 
 {% block title %}
   {{chat.title}}
@@ -18,7 +19,8 @@
         <a class="message-response" href="{% url 'chat:message_create' chat.pk %}?reply_to={{ message.id }}">Відповісти</a>
       </div>
     {% endfor %}
-
-  <a href="{% url 'chat:message_create' chat.pk %}">Додати повідомлення</a>
+  <br>
+  <br>
+  <a href="{% url 'chat:message_create' chat.pk %}">Створити повідомлення</a>
 {% endblock main_content %}
 
